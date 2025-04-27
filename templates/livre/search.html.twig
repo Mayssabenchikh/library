@@ -1,0 +1,34 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Résultats de recherche{% endblock %}
+
+{% block body %}
+    <div class="container my-5">
+        <h1>Résultats de recherche pour "{{ query }}"</h1>
+        
+        {% if livres|length > 0 %}
+            <div class="row mt-4">
+                {% for livre in livres %}
+                    <div class="col-md-3 mb-4">
+                        <div class="card">
+                            <div class="card-body">
+                                <h5 class="card-title">{{ livre.titre }}</h5>
+                                <h6 class="card-subtitle mb-2 text-muted">Par {{ livre.auteur.nom }}</h6>
+                                <p class="card-text">Genre: {{ livre.genre.nom }}</p>
+                                <a href="{{ path('app_livre_show', {'id': livre.id}) }}" class="btn btn-primary">Voir détails</a>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <div class="alert alert-info mt-4">
+                Aucun livre ne correspond à votre recherche. Essayez avec d'autres termes.
+            </div>
+        {% endif %}
+        
+        <div class="mt-4">
+            <a href="{{ path('app_livre_index') }}" class="btn btn-secondary">Retour à la liste</a>
+        </div>
+    </div>
+{% endblock %}
