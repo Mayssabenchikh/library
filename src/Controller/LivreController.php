@@ -10,14 +10,20 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
-#[Route('/livre')]
+
+#[Route('/livres') ]
 final class LivreController extends AbstractController
 {
     #[Route(name: 'app_livre_index', methods: ['GET'])]
-    public function index(LivreRepository $livreRepository): Response
+    public function index(LivreRepository $livreRepository, Request $request): Response
     {
+        if ($request->get('search')) {
+            $livres = $livreRepository->search($request->get('search'));
+        }else{
+            $livres = $livreRepository->findAll();
+        }
         return $this->render('livre/index.html.twig', [
-            'livres' => $livreRepository->findAll(),
+            'livres' => $livres,
         ]);
     }
 
@@ -77,26 +83,20 @@ final class LivreController extends AbstractController
 
         return $this->redirectToRoute('app_livre_index', [], Response::HTTP_SEE_OTHER);
     }
-    #[Route('/search', name: 'app_livre_search')]
-public function search(Request $request, EntityManagerInterface $entityManager): Response
-{
-    $query = $request->query->get('query');
-    
-    // Recherche dans le repository
-    $livres = $entityManager->getRepository(Livre::class)->createQueryBuilder('l')
-        ->leftJoin('l.auteur', 'a')
-        ->leftJoin('l.genre', 'g')
-        ->where('l.titre LIKE :query')
-        ->orWhere('a.nom LIKE :query')
-        ->orWhere('g.nom LIKE :query')
-        ->setParameter('query', '%' . $query . '%')
-        ->getQuery()
-        ->getResult();
-    
-    return $this->render('livre/search.html.twig', [
-        'livres' => $livres,
-        'query' => $query
-    ]);
-}
 
+    #[Route('/search', name: 'app_livre_search', methods: ['GET'])]
+    public function search(Request $request, LivreRepository $livreRepository): Response
+    {
+        $query = $request->query->get('query', '');
+    
+        $livres = $livreRepository->search($query);
+    
+        return $this->render('livre/search.html.twig', [
+            'query' => $query,
+            'livres' => $livres,
+        ]);
+    }
+    
+
+    
 }

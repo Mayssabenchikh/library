@@ -9,6 +9,7 @@ use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
 
 class LivreType extends AbstractType
 {
@@ -25,6 +26,9 @@ class LivreType extends AbstractType
             ->add('genre', EntityType::class, [
                 'class' => Genre::class,
                 'choice_label' => 'id',
+            ])
+            ->add('image', TextType::class, [
+                'required' => true,
             ])
         ;
     }

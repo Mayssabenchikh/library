@@ -1,262 +1,818 @@
-{# templates/home/index.html.twig #}
-{% extends 'base.html.twig' %}
+<!DOCTYPE html>
+<html lang="fr" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <title>Bibliothèque Municipale - Découvrez notre collection</title>
+    <style>
+        :root {
+            --primary: #8E4A49;
+            --secondary: #A67C52;
+            --light: #f9f9f9;
+            --dark: #3a3a3a;
+            --accent: #E0C9A6;
+            --background: #f5f2e9;
+        }
 
-{% block title %}Accueil - Bibliothèque Municipale
-{% endblock %}
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
 
-{% block stylesheets %}
-	{{ parent() }}
-	<style>:root
-	{
-		--primary-color: #3a3a3a;
-		--secondary-color: #b77d56;
-		--light-color: #f8f8f8;
-		--dark-color: #2c2c2c;
-         --beige-color: #f5f2e9; 
-	}
+        body {
+            background: var(--background);
+            color: var(--dark);
+            min-height: 100vh;
+            line-height: 1.6;
+        }
 
-	body {
-		font-family: 'Playfair Display', serif;
-		color: var(--primary-color);
-		line-height: 1.6;
-	}
+        .header {
+            background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(166, 124, 82, 0.7)), url('https://images.unsplash.com/photo-1507842217343-583bb7270b66?ixlib=rb-1.2.1&auto=format&fit=crop&w=1920&q=80') center/cover no-repeat;
+            height: 75vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+            align-items: center;
+            text-align: center;
+            color: white;
+            position: relative;
+            overflow: hidden;
+            padding-top: 12rem;
+        }
 
-	.navbar {
-		padding: 1.5rem 2rem;
-		border-bottom: 1px solid rgba(0, 0, 0, 0.1);
-background-color: var(--beige-color) !important; 
-	}
+        .nav {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1.8rem 3rem;
+            z-index: 10;
+            background: rgba(58, 58, 58, 0.2);
+            backdrop-filter: blur(5px);
+        }
 
-	.navbar-brand {
-		font-size: 1.8rem;
-		font-weight: 700;
-		letter-spacing: 1px;
-        
-	}
+        .logo {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: white;
+            text-decoration: none;
+        }
 
-	.nav-link {
-		margin: 0 15px;
-		font-size: 0.9rem;
-		text-transform: uppercase;
-		letter-spacing: 1px;
-	}
+        .logo span {
+            color: var(--accent);
+        }
 
-	.hero {
-		height: 80vh;
-  background-color: var(--beige-color) !important;
-		display: flex;
-	}
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+        }
 
-	.hero-content {
-		padding: 3rem;
-		display: flex;
-		flex-direction: column;
-		justify-content: center;
-		width: 50%;
-	}
+        .nav-links a {
+            color: white;
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            position: relative;
+        }
 
-	.hero-image {
-		width: 50%;
-		background-image: url('/images/bib1.jpg');
-		background-size: cover;
-		background-position: center;
-	}
+        .nav-links a:hover {
+            color: var(--accent);
+        }
 
-	.hero-title {
-		font-size: 3rem;
-		line-height: 1.2;
-		margin-bottom: 1.5rem;
-		font-weight: 400;
-	}
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 2px;
+            bottom: -5px;
+            left: 0;
+            background-color: var(--accent);
+            transition: width 0.3s ease;
+        }
 
-	.hero-subtitle {
-		font-size: 1.1rem;
-		margin-bottom: 2rem;
-		font-weight: 400;
-		max-width: 80%;
-	}
+        .nav-links a:hover::after {
+            width: 100%;
+        }
 
-	.btn-reserve {
-		display: inline-block;
-		padding: 10px 20px ;
-		background-color: transparent;
-		border: 1px solid var(--primary-color);
-		color: var(--primary-color);
-		text-transform: uppercase;
-		letter-spacing: 2px;
-		font-size: 0.8rem;
-		transition: all 0.3s ease;
-		text-decoration: none;
-		margin-top: 1rem;
-       
-	}
+        .cta-buttons {
+            display: flex;
+            gap: 1rem;
+        }
 
-	.btn-reserve:hover {
-		background-color: var(--primary-color);
-		color: white;
-	}
+        .cart-icon {
+            position: relative;
+            margin-right: 1.5rem;
+            cursor: pointer;
+            color: white;
+            font-size: 1.3rem;
+        }
 
-	.featured-books {
-		padding: 5rem 2rem;
-		background-color: var(--secondary-color);
-		color: white;
-	}
+        .cart-badge {
+            position: absolute;
+            top: -8px;
+            right: -8px;
+            background: var(--primary);
+            color: white;
+            font-size: 0.7rem;
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
 
-	.featured-title {
-		text-align: center;
-		margin-bottom: 3rem;
-		font-size: 2rem;
-	}
+        .btn {
+            padding: 0.8rem 1.5rem;
+            border-radius: 30px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            border: none;
+            cursor: pointer;
+        }
 
-	.book-card {
-		background-color: white;
-		padding: 1.5rem;
-		color: var(--primary-color);
-		text-align: center;
-		height: 100%;
-	}
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+            box-shadow: 0 4px 15px rgba(142, 74, 73, 0.4);
+        }
 
-	.book-card img {
-		max-width: 70%;
-		margin-bottom: 1rem;
-	}
+        .btn-primary:hover {
+            background: #a85958;
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(142, 74, 73, 0.6);
+        }
 
-	footer {
-		background-color: var(--dark-color);
-		color: white;
-		padding: 3rem 2rem;
-		text-align: center;
-	}
+        .btn-outline {
+            background: transparent;
+            color: white;
+            border: 2px solid white;
+        }
 
-	.search-form {
-		margin-top: 2rem;
-		display: flex;
-		max-width: 80%;
-	}
+        .btn-outline:hover {
+            background: rgba(255, 255, 255, 0.1);
+            transform: translateY(-3px);
+        }
 
-	.search-form input {
-		flex-grow: 1;
-		padding: 10px 15px;
-		border: 1px solid #ddd;
-		border-right: none;
-	}
+        .hero-content {
+            max-width: 800px;
+            padding: 0 2rem;
+            z-index: 2;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
 
-	.search-form button {
-		padding: 10px 20px;
-		background-color: var(--primary-color);
-		color: white;
-		border: 1px solid var(--primary-color);
-	}
-</style>
-<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&display=swap" rel="stylesheet">{% endblock %}{% block body %}
-<nav class="navbar navbar-expand-lg navbar-light bg-light">
-	<div class="container">
-		<a class="navbar-brand" href="{{ path('app_home') }}">BIBLIOTHÈQUE</a>
-		<button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-			<span class="navbar-toggler-icon"></span>
-		</button>
-		<div class="collapse navbar-collapse justify-content-center" id="navbarNav">
-			<ul class="navbar-nav">
-				<li class="nav-item">
-					<a class="nav-link" href="{{ path('app_home') }}">Accueil</a>
-				</li>
-				<li class="nav-item">
-					<a class="nav-link" href="{{ path('app_livre_index') }}">Livres</a>
-				</li>
-				<li class="nav-item">
-					<a class="nav-link" href="{{ path('app_auteur_index') }}">Auteurs</a>
-				</li>
-				<li class="nav-item">
-					<a class="nav-link" href="{{ path('app_genre_index') }}">Genres</a>
-				</li>
-			</ul>
-		</div>
-		<div>
-    {% if app.user %}
-        <div class="d-flex align-items-center">
-                    <i class="fa-solid fa-user me-2" style="color: var(--primary-color);"></i> <!-- Icône utilisateur -->
+        .hero-content h1 {
+            font-size: 3.5rem;
+            margin-bottom: 1rem;
+            font-weight: 700;
+        }
 
-            <span class="me-2">{{ app.user.nom }}</span>
-            <a class="btn btn-sm btn-outline-secondary" href="{{ path('app_logout') }}">Se déconnecter</a>
+        .hero-content p {
+            font-size: 1.2rem;
+            margin-bottom: 2rem;
+        }
+
+        .center-buttons {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            margin-top: 2rem;
+        }
+
+        .search-container {
+            position: absolute;
+            top:15%;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            width: 80%;
+            max-width: 600px;
+            border-radius: 50px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            z-index: 5;
+        }
+
+        .search-input {
+            flex-grow: 1;
+            padding: 1rem 1.5rem;
+            border: none;
+            outline: none;
+            font-size: 1rem;
+        }
+
+        .search-btn {
+            background: var(--primary);
+            color: white;
+            padding: 1rem 1.5rem;
+            border: none;
+            cursor: pointer;
+        }
+
+        .features {
+            padding: 5rem 10%;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 3rem;
+        }
+
+        .feature-card {
+            background: white;
+            border-radius: 20px;
+            padding: 2rem;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+            transition: all 0.3s ease;
+            text-align: center;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+        }
+
+        .feature-icon {
+            width: 80px;
+            height: 80px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 1.5rem;
+            border-radius: 50%;
+            font-size: 2rem;
+            color: var(--primary);
+            background: rgba(142, 74, 73, 0.1);
+            border: 2px dashed rgba(142, 74, 73, 0.3);
+        }
+
+        .feature-card h3 {
+            margin-bottom: 1rem;
+            font-size: 1.5rem;
+        }
+
+        .books {
+            padding: 5rem 10%;
+            background: linear-gradient(135deg, #f5f2e9 0%, #e9e0d1 100%);
+        }
+
+        .section-title {
+            text-align: center;
+            margin-bottom: 3rem;
+            position: relative;
+        }
+
+        .section-title h2 {
+            font-size: 2.5rem;
+            display: inline-block;
+        }
+
+        .section-title h2::after {
+            content: '';
+            position: absolute;
+            width: 80px;
+            height: 4px;
+            background: var(--secondary);
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+
+        .book-grid {
+            /*display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));*/
+            display:flex;
+            align-items:center;
+            justify-content:center;
+            gap: 2rem;
+        }
+
+        .book-card {
+            background: white;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            transition: all 0.3s ease;
+        }
+
+        .book-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        .book-image {
+            height: 300px;
+            background-size: cover;
+            background-position: center;
+        }
+
+        .book-content {
+            padding: 1.5rem;
+        }
+
+        .book-category {
+            color: var(--secondary);
+            font-weight: 600;
+            font-size: 0.9rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .book-title {
+            font-size: 1.3rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .book-info {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 1rem;
+            color: #6c757d;
+            font-size: 0.9rem;
+        }
+
+        .book-price {
+            font-weight: 700;
+            font-size: 1.2rem;
+            color: var(--primary);
+            margin-bottom: 1rem;
+        }
+
+        .cta-section {
+            background: linear-gradient(rgba(142, 74, 73, 0.8), rgba(166, 124, 82, 0.9)), url('https://images.unsplash.com/photo-1481627834876-b7833e8f5570?ixlib=rb-1.2.1&auto=format&fit=crop&w=1920&q=80') center/cover no-repeat;
+            padding: 5rem 2rem;
+            text-align: center;
+            color: white;
+        }
+
+        .cta-section h2 {
+            font-size: 2.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .cta-section p {
+            max-width: 600px;
+            margin: 0 auto 2rem;
+            font-size: 1.1rem;
+        }
+
+        .testimonials {
+            padding: 5rem 10%;
+            text-align: center;
+        }
+
+        .testimonial-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .testimonial-card {
+            background: white;
+            border-radius: 15px;
+            padding: 2rem;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+        }
+
+        .testimonial-text {
+            font-style: italic;
+            margin-bottom: 1.5rem;
+            position: relative;
+        }
+
+        .testimonial-text::before {
+            content: '\201C';
+            font-size: 4rem;
+            position: absolute;
+            left: -1rem;
+            top: -2rem;
+            color: rgba(142, 74, 73, 0.2);
+        }
+
+        .testimonial-author {
+            display: flex;
+            align-items: center;
+        }
+
+        .author-avatar {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            margin-right: 1rem;
+            background-size: cover;
+            background-position: center;
+        }
+
+        .author-info h4 {
+            margin-bottom: 0.2rem;
+        }
+
+        .author-info p {
+            color: #6c757d;
+            font-size: 0.9rem;
+        }
+
+        .footer {
+            background: var(--dark);
+            color: white;
+            padding: 4rem 10% 2rem;
+            background-image: linear-gradient(to right, #3a3a3a, #4a4a4a, #5a5a5a);
+        }
+
+        .footer-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 3rem;
+            margin-bottom: 3rem;
+        }
+
+        .footer-column h3 {
+            margin-bottom: 1.5rem;
+            font-size: 1.3rem;
+            position: relative;
+            padding-bottom: 0.5rem;
+        }
+
+        .footer-column h3::after {
+            content: '';
+            position: absolute;
+            width: 40px;
+            height: 3px;
+            background: var(--secondary);
+            bottom: 0;
+            left: 0;
+        }
+
+        .footer-column p {
+            margin-bottom: 1rem;
+        }
+
+        .footer-links {
+            list-style: none;
+        }
+
+        .footer-links li {
+            margin-bottom: 0.8rem;
+        }
+
+        .footer-links a {
+            color: #b0b0b0;
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+
+        .footer-links a:hover {
+            color: var(--secondary);
+            padding-left: 5px;
+        }
+
+        .social-links {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .social-links a {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+        }
+
+        .social-links a:hover {
+            background: var(--secondary);
+            transform: translateY(-3px);
+        }
+
+        .footer-bottom {
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            padding-top: 2rem;
+            text-align: center;
+            color: #b0b0b0;
+            font-size: 0.9rem;
+        }
+
+        /* Responsive styles */
+        @media (max-width: 992px) {
+            .hero-content h1 {
+                font-size: 2.8rem;
+            }
+            
+            .search-container {
+                top: 5rem;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .nav {
+                padding: 1rem 2rem;
+            }
+
+            .hero-content h1 {
+                font-size: 2.2rem;
+            }
+
+            .nav-links {
+                display: none;
+            }
+
+            .header {
+                height: 60vh;
+            }
+            
+            .search-container {
+                top: 4rem;
+                width: 90%;
+            }
+        }
+    </style>
+</head>
+<body>
+<!-- Header Section -->
+<header class="header">
+    <nav class="nav">
+        <a href="#" class="logo">Biblio<span>thèque</span> <i class="fas fa-book" style="font-size: 0.9rem;"></i></a>
+        <div class="nav-links">
+            <a href="#">Accueil</a>
+            <a href="/livres">Livres</a>
+            <a href="/auteur">Auteurs</a>
+            <a href="/genre">Genres</a>
         </div>
-    {% else %}
-        <div class="d-flex">
-            <a class="nav-link" href="{{ path('app_login') }}">Se connecter</a>
-            <a class="nav-link" href="{{ path('app_register') }}">S'inscrire</a>
+        <div class="cta-buttons">
+            <div class="cart-icon">
+                <i class="fas fa-shopping-cart"></i>
+                <span class="cart-badge">0</span>
+            </div>
+            <a href="/login" class="btn btn-outline">Connexion</a>
+            <a href="/register" class="btn btn-primary">Inscription</a>
         </div>
-    {% endif %}
-</div>
-	</div>
-</nav>
-
-<section class="hero">
-	<div class="hero-content">
-		<h1 class="hero-title">Bienvenue à la Bibliothèque, l'univers des livres à portée de main.</h1>
-		<p class="hero-subtitle">Explorez notre collection diversifiée de plus de 10 000 ouvrages disponibles à l'emprunt.</p>
-
-		<form class="search-form" action="{{ path('app_livre_search') }}" method="GET">
-			<input type="text" name="query" placeholder="Rechercher un livre, un auteur..." required>
-			<button type="submit">Rechercher</button>
-		</form>
-
-		<a href="{{ path('app_livre_index') }}" class="btn-reserve">DÉCOUVRIR</a>
-	</div>
-	<div class="hero-image"></div>
-</section>
-
-<section class="featured-books">
-	<div class="container">
-		<h2 class="featured-title">Nouveautés</h2>
-		<div class="row">
-			{% for livre in featured_books %}
-    <div class="col-md-3 mb-4">
-        <div class="book-card">
-            <img src="{{ livre.image }}" alt="{{ livre.titre }}">
-            <h3>{{ livre.titre }}</h3>
-            <p>Par {{ livre.auteur.nom }}</p>
-            <a href="{{ path('app_livre_show', {'id': livre.id}) }}" class="btn-reserve">Voir plus</a>
+    </nav>
+    
+   
+    
+    <div class="hero-content">
+        <h1>Découvrez notre collection de livres</h1>
+        <p>Romans, Essais, BD, Jeunesse - Enrichissez votre bibliothèque personnelle et achetez facilement</p>
+        <div class="center-buttons">
+            <a href="/catalogue" class="btn btn-primary">Explorer le catalogue</a>
+            <a href="/about" class="btn btn-outline">En savoir plus</a>
         </div>
     </div>
-{% endfor %}
+     
+</header>
+<form action="{{path('app_livre_index')}}"  method="GET" class="search-container">
+    <input type="text" name="search" class="search-input" placeholder="Rechercher un livre, un auteur..." required>
+    <button type="submit" class="search-btn"><i class="fas fa-search"></i></button>
+</form>
 
-		</div>
-	</div>
+
+<!-- Features Section -->
+<section class="features">
+    <div class="feature-card">
+        <div class="feature-icon">
+            <i class="fas fa-book-open"></i>
+        </div>
+        <h3>Catalogue enrichi</h3>
+        <p>Plus de 10 000 livres disponibles dans tous les genres littéraires</p>
+    </div>
+    <div class="feature-card">
+        <div class="feature-icon">
+            <i class="fas fa-truck"></i>
+        </div>
+        <h3>Livraison rapide</h3>
+        <p>Livraison à domicile en 24h ou retrait en boutique gratuit</p>
+    </div>
+    <div class="feature-card">
+        <div class="feature-icon">
+            <i class="fas fa-percent"></i>
+        </div>
+        <h3>Offres spéciales</h3>
+        <p>Des promotions régulières et un programme de fidélité avantageux</p>
+    </div>
 </section>
 
-<footer>
-	<div class="container">
-		<div class="row">
-			<div class="col-md-4">
-				<h3>Horaires d'ouverture</h3>
-				<p>Lundi - Vendredi: 9h - 19h</p>
-				<p>Samedi: 10h - 17h</p>
-				<p>Dimanche: Fermé</p>
-			</div>
-			<div class="col-md-4">
-				<h3>Contact</h3>
-				<p>123 Rue de la Bibliothèque</p>
-				<p>contact@bibliotheque.fr</p>
-				<p>01 23 45 67 89</p>
-			</div>
-			<div class="col-md-4">
-				<h3>Liens utiles</h3>
-				<p>
-					<a href="#">FAQ</a>
-				</p>
-				<p>
-					<a href="#">Conditions d'emprunt</a>
-				</p>
-				<p>
-					<a href="#">Événements</a>
-				</p>
-			</div>
-		</div>
-		<div class="row mt-4">
-			<div class="col-12 text-center">
-				<p>&copy;
-					{{ "now"|date("Y") }}
-					Bibliothèque Municipale. Tous droits réservés.</p>
-			</div>
-		</div>
-	</div>
-</footer>{% endblock %}
+<!-- Popular Books Section -->
+<section class="books">
+    <div class="section-title">
+        <h2>Nouveautés littéraires</h2>
+    </div>
+    <div class="book-grid">
+        <div class="book-card">
+            <div class="book-image" style="background-image: url('https://images.unsplash.com/photo-1544947950-fa07a98d237f?ixlib=rb-1.2.1&auto=format&fit=crop&w=400&q=80')"></div>
+            <div class="book-content">
+                <p class="book-category">Roman</p>
+                <h3 class="book-title">Les Fleurs du Silence</h3>
+                <div class="book-info">
+                    <span><i class="fas fa-user"></i> Marie Duplantier</span>
+                    <span><i class="fas fa-check-circle"></i> En stock</span>
+                </div>
+                <p class="book-price">19,90 €</p>
+                <a href="/livre/1" class="btn btn-primary">Acheter</a>
+            </div>
+        </div>
+        <div class="book-card">
+            <div class="book-image" style="background-image: url('https://images.unsplash.com/photo-1589998059171-988d887df646?ixlib=rb-1.2.1&auto=format&fit=crop&w=400&q=80')"></div>
+            <div class="book-content">
+                <p class="book-category">Essai</p>
+                <h3 class="book-title">L'Âge des Possibles</h3>
+                <div class="book-info">
+                    <span><i class="fas fa-user"></i> Thomas Mercier</span>
+                    <span><i class="fas fa-check-circle"></i> En stock</span>
+                </div>
+                <p class="book-price">22,50 €</p>
+                <a href="/livre/2" class="btn btn-primary">Acheter</a>
+            </div>
+        </div>
+        <div class="book-card">
+            <div class="book-image" style="background-image: url('https://images.unsplash.com/photo-1541963463532-d68292c34b19?ixlib=rb-1.2.1&auto=format&fit=crop&w=400&q=80')"></div>
+            <div class="book-content">
+                <p class="book-category">Jeunesse</p>
+                <h3 class="book-title">Le Voyage d'Élias</h3>
+                <div class="book-info">
+                    <span><i class="fas fa-user"></i> Julie Lambert</span>
+                    <span><i class="fas fa-check-circle"></i> En stock</span>
+                </div>
+                <p class="book-price">15,90 €</p>
+                <a href="/livre/3" class="btn btn-primary">Acheter</a>
+            </div>
+        </div>
+        <div class="book-card">
+            <div class="book-image" style="background-image: url('https://images.unsplash.com/photo-1543002588-bfa74002ed7e?ixlib=rb-1.2.1&auto=format&fit=crop&w=400&q=80')"></div>
+            <div class="book-content">
+                <p class="book-category">Science-Fiction</p>
+                <h3 class="book-title">Horizons Parallèles</h3>
+                <div class="book-info">
+                    <span><i class="fas fa-user"></i> Alex Montfort</span>
+                    <span><i class="fas fa-check-circle"></i> En stock</span>
+                </div>
+                <p class="book-price">20,90 €</p>
+                <a href="/livre/4" class="btn btn-primary">Acheter</a>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- CTA Section -->
+<section class="cta-section">
+    <h2>Devenez membre dès aujourd'hui</h2>
+    <p>Rejoignez notre communauté de lecteurs et profitez de réductions exclusives sur tous nos livres</p>
+    <a href="/register" class="btn btn-primary">S'inscrire maintenant</a>
+</section>
+
+<!-- Testimonials Section -->
+<section class="testimonials">
+    <div class="section-title">
+        <h2>Témoignages</h2>
+    </div>
+    <div class="testimonial-grid">
+        <div class="testimonial-card">
+            <p class="testimonial-text">La libraire est devenue mon lieu favori. Le système d'achat en ligne est vraiment pratique et me permet de recevoir mes livres rapidement.</p>
+            <div class="testimonial-author">
+                <div class="author-avatar" style="background-image: url('https://images.unsplash.com/photo-1438761681033-6461ffad8d80?ixlib=rb-1.2.1&auto=format&fit=crop&w=100&q=80')"></div>
+                <div class="author-info">
+                    <h4>Sophie Martin</h4>
+                    <p>Cliente fidèle depuis 3 ans</p>
+                </div>
+            </div>
+        </div>
+        <div class="testimonial-card">
+            <p class="testimonial-text">Les sélections thématiques sont toujours pertinentes. J'ai découvert de nombreux auteurs que je n'aurais jamais lus autrement.</p>
+            <div class="testimonial-author">
+                <div class="author-avatar" style="background-image: url('https://images.unsplash.com/photo-1500648767791-00dcc994a43e?ixlib=rb-1.2.1&auto=format&fit=crop&w=100&q=80')"></div>
+                <div class="author-info">
+                    <h4>Pierre Durand</h4>
+                    <p>Client fidèle depuis 5 ans</p>
+                </div>
+            </div>
+        </div>
+        <div class="testimonial-card">
+            <p class="testimonial-text">La section jeunesse est extraordinaire. Mes enfants adorent leurs nouveaux livres et je suis ravie des prix proposés par la librairie.</p>
+            <div class="testimonial-author">
+                <div class="author-avatar" style="background-image: url('https://images.unsplash.com/photo-1531746020798-e6953c6e8e04?ixlib=rb-1.2.1&auto=format&fit=crop&w=100&q=80')"></div>
+                <div class="author-info">
+                    <h4>Amélie Bernard</h4>
+                    <p>Cliente fidèle depuis 2 ans</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Footer -->
+<footer class="footer">
+    <div class="footer-content">
+        <div class="footer-column">
+            <h3>Bibliothèque Municipale</h3>
+            <p>Un espace de culture, de découverte et de partage ouvert à tous.</p>
+            <div class="social-links">
+                <a href="#"><i class="fab fa-facebook-f"></i></a>
+                <a href="#"><i class="fab fa-instagram"></i></a>
+                <a href="#"><i class="fab fa-twitter"></i></a>
+                <a href="#"><i class="fab fa-youtube"></i></a>
+            </div>
+        </div>
+        <div class="footer-column">
+            <h3>Liens rapides</h3>
+            <ul class="footer-links">
+                <li><a href="#">Accueil</a></li>
+                <li><a href="#">Catalogue</a></li>
+                <li><a href="#">FAQ</a></li>
+                <li><a href="#">Contact</a></li>
+            </ul>
+        </div>
+        <div class="footer-column">
+            <h3>Collections</h3>
+            <ul class="footer-links">
+                <li><a href="#">Romans</a></li>
+                <li><a href="#">Essais</a></li>
+                <li><a href="#">Jeunesse</a></li>
+                <li><a href="#">BD & Mangas</a></li>
+                <li><a href="#">Livres numériques</a></li>
+            </ul>
+        </div>
+        <div class="footer-column">
+            <h3>Horaires & Contact</h3>
+            <ul class="footer-links">
+                <li><i class="fas fa-map-marker-alt"></i> 123 Rue de la Bibliothèque, Paris</li>
+                <li><i class="fas fa-clock"></i> Lun-Ven: 9h-19h | Sam: 10h-17h</li>
+                <li><i class="fas fa-phone"></i> 01 23 45 67 89</li>
+                <li><i class="fas fa-envelope"></i> contact@bibliotheque.fr</li>
+            </ul>
+        </div>
+    </div>
+    <div class="footer-bottom">
+        <p>&copy; 2025 Bibliothèque Municipale - Tous droits réservés</p>
+    </div>
+</footer>
+
+<!-- JavaScript -->
+<script>
+    // Animation simple au scroll
+    document.addEventListener('DOMContentLoaded', function() {
+        const featureCards = document.querySelectorAll('.feature-card');
+        const bookCards = document.querySelectorAll('.book-card');
+        let cartCount = 0;
+        const cartBadge = document.querySelector('.cart-badge');
+        const buyButtons = document.querySelectorAll('.book-card .btn-primary');
+
+        // Animation simple au survol
+        featureCards.forEach(card => {
+            card.addEventListener('mouseenter', function() {
+                this.style.transform = 'translateY(-15px)';
+            });
+
+            card.addEventListener('mouseleave', function() {
+                this.style.transform = 'translateY(-10px)';
+            });
+        });
+
+        // Animation pour la nav au scroll
+        window.addEventListener('scroll', function() {
+            const nav = document.querySelector('.nav');
+            if (window.scrollY > 100) {
+                nav.style.background = 'rgba(166, 124, 82, 0.8)';
+                nav.style.padding = '1rem 3rem';
+                nav.style.boxShadow = '0 5px 15px rgba(58, 58, 58, 0.2)';
+            } else {
+                nav.style.background = 'rgba(58, 58, 58, 0.2)';
+                nav.style.backdropFilter = 'blur(5px)';
+                nav.style.padding = '1.8rem 3rem';
+                nav.style.boxShadow = 'none';
+            }
+        });
+        
+        // Gestion du panier
+        buyButtons.forEach(button => {
+            button.addEventListener('click', function(e) {
+                e.preventDefault();
+                cartCount++;
+                cartBadge.textContent = cartCount;
+                
+                // Animation d'ajout au panier
+                const bookCard = this.closest('.book-card');
+                bookCard.style.transform = 'scale(1.05)';
+                setTimeout(() => {
+                    bookCard.style.transform = 'scale(1)';
+                }, 200);
+                
+                // Notification d'ajout au panier
+                alert('Produit ajouté au panier !');
+            });
+        });
+    });
+</script>
+</body>
+</html>
