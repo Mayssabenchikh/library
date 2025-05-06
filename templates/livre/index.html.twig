@@ -1,39 +1,138 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Livre index{% endblock %}
+{% block title %}Liste des Livres{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css">
+    <link rel="stylesheet" href="{{ asset('styles/bibliotheque-style.css') }}">
+{% endblock %}
 
 {% block body %}
-    <h1>Livre index</h1>
+<div class="loader"></div>
+<div class="bibliotheque-wrapper">
+    <h1>Bibliothèque - Collection de Livres</h1>
+    
+    <form action="{{path('app_livre_index')}}"  method="GET" class="search-container">
+    <input type="text" name="search" class="search-input" placeholder="Rechercher un livre, un auteur..." required>
+    <button type="submit" class="search-btn"><i class="fas fa-search"></i></button>
+</form>
+    {% if livres is empty %}
+        <div class="empty-state">
+            <i class="fas fa-book-open empty-icon"></i>
+            <p>Aucun livre disponible dans la bibliothèque</p>
+        </div>
+    {% else %}
+        <div class="livres-grid">
+            {% for livre in livres %}
+                <div class="livre-card" data-titre="{{ livre.titre|lower }}">
+                    <div class="livre-header">
+                        <span class="livre-id">#{{ livre.id }}</span>
+                        <span class="livre-status {% if livre.disponible %}disponible-oui{% else %}disponible-non{% endif %}">
+                            {{ livre.disponible ? 'Disponible' : 'Indisponible' }}
+                        </span>
+                    </div>
+                    
+                    <h2 class="livre-titre">{{ livre.titre }}</h2>
+                    <p class="livre-isbn">ISBN: {{ livre.isbn }}</p>
+                    
+                    <div class="livre-actions">
+                        <a href="{{ path('app_livre_show', {'id': livre.id}) }}" class="btn-action btn-view">
+                            <i class="fas fa-eye"></i>
+                        </a>
+                        <a href="{{ path('app_livre_edit', {'id': livre.id}) }}" class="btn-action btn-edit">
+                            <i class="fas fa-edit"></i>
+                        </a>
+                        <button class="btn-action btn-delete delete-trigger" data-id="{{ livre.id }}">
+                            <i class="fas fa-trash-alt"></i>
+                        </button>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+        
+        <div class="pagination">
+            <!-- Pagination si nécessaire -->
+        </div>
+    {% endif %}
+    
+    <div class="btn-container">
+        <a href="{{ path('app_livre_new') }}" class="btn btn-add">
+            <i class="fas fa-plus btn-icon"></i> Ajouter un livre
+        </a>
+    </div>
+</div>
 
-    <table class="table">
-        <thead>
-            <tr>
-                <th>Id</th>
-                <th>Titre</th>
-                <th>Isbn</th>
-                <th>Disponible</th>
-                <th>actions</th>
-            </tr>
-        </thead>
-        <tbody>
-        {% for livre in livres %}
-            <tr>
-                <td>{{ livre.id }}</td>
-                <td>{{ livre.titre }}</td>
-                <td>{{ livre.isbn }}</td>
-                <td>{{ livre.disponible ? 'Yes' : 'No' }}</td>
-                <td>
-                    <a href="{{ path('app_livre_show', {'id': livre.id}) }}">show</a>
-                    <a href="{{ path('app_livre_edit', {'id': livre.id}) }}">edit</a>
-                </td>
-            </tr>
-        {% else %}
-            <tr>
-                <td colspan="5">no records found</td>
-            </tr>
-        {% endfor %}
-        </tbody>
-    </table>
+<!-- Modal de confirmation de suppression -->
+<div class="delete-modal" id="deleteModal">
+    <div class="delete-modal-content">
+        <h3>Confirmation</h3>
+        <p>Êtes-vous sûr de vouloir supprimer ce livre?</p>
+        <div class="delete-modal-actions">
+            <button id="cancelDelete" class="btn btn-back">Annuler</button>
+            <form id="deleteForm" action="" method="post" class="inline-form">
+                <input type="hidden" name="_token" value="">
+                <button type="submit" class="btn btn-delete">Confirmer</button>
+            </form>
+        </div>
+    </div>
+</div>
 
-    <a href="{{ path('app_livre_new') }}">Create new</a>
+{% block javascripts %}
+    {{ parent() }}
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Animation de chargement
+            document.body.classList.add('loading');
+            
+            setTimeout(function() {
+                document.body.classList.remove('loading');
+            }, 500);
+            
+            // Fonctionnalité de recherche
+            const searchInput = document.getElementById('searchInput');
+            const livreCards = document.querySelectorAll('.livre-card');
+            
+            searchInput.addEventListener('keyup', function() {
+                const searchTerm = this.value.toLowerCase();
+                
+                livreCards.forEach(card => {
+                    const title = card.dataset.titre;
+                    if (title.includes(searchTerm)) {
+                        card.style.display = 'flex';
+                    } else {
+                        card.style.display = 'none';
+                    }
+                });
+            });
+            
+            // Modal de suppression
+            const deleteTriggers = document.querySelectorAll('.delete-trigger');
+            const deleteModal = document.getElementById('deleteModal');
+            const cancelDelete = document.getElementById('cancelDelete');
+            const deleteForm = document.getElementById('deleteForm');
+            
+            deleteTriggers.forEach(trigger => {
+                trigger.addEventListener('click', function() {
+                    const livreId = this.dataset.id;
+                    deleteForm.action = '{{ path("app_livre_delete", {"id": "LIVRE_ID"}) }}'.replace('LIVRE_ID', livreId);
+                    deleteForm.querySelector('input[name="_token"]').value = '{{ csrf_token("delete") }}' + livreId;
+                    deleteModal.classList.add('active');
+                });
+            });
+            
+            cancelDelete.addEventListener('click', function() {
+                deleteModal.classList.remove('active');
+            });
+            
+            // Fermer le modal si on clique en dehors
+            window.addEventListener('click', function(event) {
+                if (event.target === deleteModal) {
+                    deleteModal.classList.remove('active');
+                }
+            });
+        });
+    </script>
+{% endblock %}
 {% endblock %}
