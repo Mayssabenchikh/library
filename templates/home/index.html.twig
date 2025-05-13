@@ -545,24 +545,36 @@
 <header class="header">
     <nav class="nav">
         <a href="#" class="logo">Biblio<span>thèque</span> <i class="fas fa-book" style="font-size: 0.9rem;"></i></a>
+        
         <div class="nav-links">
             <a href="#">Accueil</a>
             <a href="/livres">Livres</a>
             <a href="/auteur">Auteurs</a>
             <a href="/genre">Genres</a>
         </div>
+        
         <div class="cta-buttons">
-            <div class="cart-icon">
-                <i class="fas fa-shopping-cart"></i>
-                <span class="cart-badge">0</span>
-            </div>
-            <a href="/login" class="btn btn-outline">Connexion</a>
-            <a href="/register" class="btn btn-primary">Inscription</a>
-        </div>
+    <a href="{{ path('app_panier') }}" class="cart-icon">
+    <i class="fas fa-shopping-cart"></i>
+    <span class="cart-badge">
+        {% set panier = app.session.get('panier', {}) %}
+        {{ panier is iterable ? panier|reduce((total, qty) => total + qty, 0) : 0 }}
+    </span>
+</a>
+    
+    {% if app.user %}
+        <span class="user-name">{{ app.user.nom }}</span>
+        <form action="{{ path('app_logout') }}" method="post" style="display: inline;">
+            <button type="submit" class="btn btn-outline">Déconnexion</button>
+        </form>
+    {% else %}
+        <a href="/login" class="btn btn-outline">Connexion</a>
+        <a href="/register" class="btn btn-primary">Inscription</a>
+    {% endif %}
+</div>
     </nav>
-    
-   
-    
+
+
     <div class="hero-content">
         <h1>Découvrez notre collection de livres</h1>
         <p>Romans, Essais, BD, Jeunesse - Enrichissez votre bibliothèque personnelle et achetez facilement</p>
@@ -609,59 +621,39 @@
     <div class="section-title">
         <h2>Nouveautés littéraires</h2>
     </div>
-    <div class="book-grid">
-        <div class="book-card">
-            <div class="book-image" style="background-image: url('https://images.unsplash.com/photo-1544947950-fa07a98d237f?ixlib=rb-1.2.1&auto=format&fit=crop&w=400&q=80')"></div>
-            <div class="book-content">
-                <p class="book-category">Roman</p>
-                <h3 class="book-title">Les Fleurs du Silence</h3>
-                <div class="book-info">
-                    <span><i class="fas fa-user"></i> Marie Duplantier</span>
-                    <span><i class="fas fa-check-circle"></i> En stock</span>
-                </div>
-                <p class="book-price">19,90 €</p>
-                <a href="/livre/1" class="btn btn-primary">Acheter</a>
+        <div class="book-grid">
+    {% for book in featured_books %}
+    <div class="book-card">
+        <div class="book-image" style="background-image: url('{{ book.image }}')"></div>
+
+        <div class="book-content">
+            <p class="book-category">{{ book.genre ? book.genre.nom : 'Non catégorisé' }}</p>
+            <h3 class="book-title">{{ book.titre }}</h3>
+            <div class="book-info">
+                <span><i class="fas fa-user"></i> {{ book.auteur ? book.auteur.nom: 'Auteur inconnu' }}</span>
+                <span><i class="fas fa-money-bill-wave"></i>{{book.prix}}</span>
+                <span>
+                    <i class="fas {{ book.disponible ? 'fa-check-circle' : 'fa-times-circle' }}"></i> 
+                    {{ book.disponible ? 'Disponible' : 'Indisponible' }}
+                </span>
             </div>
+                {% if book.disponible %}
+                <a href="{{ path('app_panier_add', {'id': book.id}) }}" 
+                    class="btn btn-primary btn-add-to-cart"
+                    data-book-id="{{ book.id }}">
+                    Ajouter au panier
+                </a>
+            {% else %}
+                <button class="btn btn-secondary" disabled>Indisponible</button>
+            {% endif %}
         </div>
-        <div class="book-card">
-            <div class="book-image" style="background-image: url('https://images.unsplash.com/photo-1589998059171-988d887df646?ixlib=rb-1.2.1&auto=format&fit=crop&w=400&q=80')"></div>
-            <div class="book-content">
-                <p class="book-category">Essai</p>
-                <h3 class="book-title">L'Âge des Possibles</h3>
-                <div class="book-info">
-                    <span><i class="fas fa-user"></i> Thomas Mercier</span>
-                    <span><i class="fas fa-check-circle"></i> En stock</span>
-                </div>
-                <p class="book-price">22,50 €</p>
-                <a href="/livre/2" class="btn btn-primary">Acheter</a>
-            </div>
-        </div>
-        <div class="book-card">
-            <div class="book-image" style="background-image: url('https://images.unsplash.com/photo-1541963463532-d68292c34b19?ixlib=rb-1.2.1&auto=format&fit=crop&w=400&q=80')"></div>
-            <div class="book-content">
-                <p class="book-category">Jeunesse</p>
-                <h3 class="book-title">Le Voyage d'Élias</h3>
-                <div class="book-info">
-                    <span><i class="fas fa-user"></i> Julie Lambert</span>
-                    <span><i class="fas fa-check-circle"></i> En stock</span>
-                </div>
-                <p class="book-price">15,90 €</p>
-                <a href="/livre/3" class="btn btn-primary">Acheter</a>
-            </div>
-        </div>
-        <div class="book-card">
-            <div class="book-image" style="background-image: url('https://images.unsplash.com/photo-1543002588-bfa74002ed7e?ixlib=rb-1.2.1&auto=format&fit=crop&w=400&q=80')"></div>
-            <div class="book-content">
-                <p class="book-category">Science-Fiction</p>
-                <h3 class="book-title">Horizons Parallèles</h3>
-                <div class="book-info">
-                    <span><i class="fas fa-user"></i> Alex Montfort</span>
-                    <span><i class="fas fa-check-circle"></i> En stock</span>
-                </div>
-                <p class="book-price">20,90 €</p>
-                <a href="/livre/4" class="btn btn-primary">Acheter</a>
-            </div>
-        </div>
+    </div>
+    {% else %}
+    <div class="no-books">
+        <p>Aucun livre disponible pour le moment.</p>
+    </div>
+    {% endfor %}
+</div>
     </div>
 </section>
 
@@ -758,61 +750,153 @@
     </div>
 </footer>
 
-<!-- JavaScript -->
+
 <script>
-    // Animation simple au scroll
     document.addEventListener('DOMContentLoaded', function() {
-        const featureCards = document.querySelectorAll('.feature-card');
-        const bookCards = document.querySelectorAll('.book-card');
-        let cartCount = 0;
-        const cartBadge = document.querySelector('.cart-badge');
-        const buyButtons = document.querySelectorAll('.book-card .btn-primary');
+    // Éléments du DOM
+    const featureCards = document.querySelectorAll('.feature-card');
+    const bookCards = document.querySelectorAll('.book-card');
+    const cartBadge = document.querySelector('.cart-badge');
+    const nav = document.querySelector('.nav');
+    const addToCartButtons = document.querySelectorAll('.btn-add-to-cart');
 
-        // Animation simple au survol
-        featureCards.forEach(card => {
-            card.addEventListener('mouseenter', function() {
-                this.style.transform = 'translateY(-15px)';
-            });
-
-            card.addEventListener('mouseleave', function() {
-                this.style.transform = 'translateY(-10px)';
-            });
+    // 1. Animations des cartes au survol
+    featureCards.forEach(card => {
+        card.addEventListener('mouseenter', function() {
+            this.style.transform = 'translateY(-15px)';
+            this.style.transition = 'transform 0.3s ease';
+            this.style.boxShadow = '0 10px 20px rgba(0,0,0,0.1)';
         });
 
-        // Animation pour la nav au scroll
-        window.addEventListener('scroll', function() {
-            const nav = document.querySelector('.nav');
-            if (window.scrollY > 100) {
-                nav.style.background = 'rgba(166, 124, 82, 0.8)';
-                nav.style.padding = '1rem 3rem';
-                nav.style.boxShadow = '0 5px 15px rgba(58, 58, 58, 0.2)';
-            } else {
-                nav.style.background = 'rgba(58, 58, 58, 0.2)';
-                nav.style.backdropFilter = 'blur(5px)';
-                nav.style.padding = '1.8rem 3rem';
-                nav.style.boxShadow = 'none';
-            }
-        });
-        
-        // Gestion du panier
-        buyButtons.forEach(button => {
-            button.addEventListener('click', function(e) {
-                e.preventDefault();
-                cartCount++;
-                cartBadge.textContent = cartCount;
-                
-                // Animation d'ajout au panier
-                const bookCard = this.closest('.book-card');
-                bookCard.style.transform = 'scale(1.05)';
-                setTimeout(() => {
-                    bookCard.style.transform = 'scale(1)';
-                }, 200);
-                
-                // Notification d'ajout au panier
-                alert('Produit ajouté au panier !');
-            });
+        card.addEventListener('mouseleave', function() {
+            this.style.transform = 'translateY(-10px)';
+            this.style.boxShadow = '0 5px 15px rgba(0,0,0,0.05)';
         });
     });
+
+    // 2. Animation de la navbar au scroll
+    window.addEventListener('scroll', function() {
+        if (window.scrollY > 100) {
+            nav.style.background = 'rgba(166, 124, 82, 0.8)';
+            nav.style.padding = '1rem 3rem';
+            nav.style.boxShadow = '0 5px 15px rgba(58, 58, 58, 0.2)';
+        } else {
+            nav.style.background = 'rgba(58, 58, 58, 0.2)';
+            nav.style.backdropFilter = 'blur(5px)';
+            nav.style.padding = '1.8rem 3rem';
+            nav.style.boxShadow = 'none';
+        }
+    });
+
+    // 3. Gestion de l'ajout au panier
+    addToCartButtons.forEach(button => {
+        button.addEventListener('click', async function(e) {
+            e.preventDefault();
+            
+            // Sauvegarde le texte original du bouton
+            const originalText = button.innerHTML;
+            
+            try {
+                // Affiche un indicateur de chargement
+                button.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Ajout en cours...';
+                button.disabled = true;
+                
+                const response = await fetch(this.href, {
+                    method: 'POST',
+                    headers: {
+                        'X-Requested-With': 'XMLHttpRequest'
+                    }
+                });
+                
+                if (response.ok) {
+                    // Met à jour le compteur du panier
+                    await updateCartCount();
+                    
+                    // Affiche une notification stylisée
+                    showToast('Article ajouté au panier !', 'success');
+                    
+                    // Anime la carte du livre
+                    animateCard(this.closest('.book-card'));
+                    
+                    // Anime le badge du panier
+                    animateCartBadge();
+                } else {
+                    showToast('Erreur lors de l\'ajout', 'error');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                showToast('Problème de connexion', 'error');
+            } finally {
+                // Réinitialise le bouton
+                button.innerHTML = originalText;
+                button.disabled = false;
+            }
+        });
+    });
+
+    // Fonction pour mettre à jour le compteur du panier
+    async function updateCartCount() {
+        try {
+            const response = await fetch('/panier/count');
+            const data = await response.json();
+            cartBadge.textContent = data.count;
+        } catch (error) {
+            console.error('Erreur de mise à jour du panier:', error);
+        }
+    }
+
+    // Fonction pour animer la carte du livre
+    function animateCard(card) {
+        card.style.transform = 'scale(1.05)';
+        card.style.boxShadow = '0 10px 25px rgba(0,0,0,0.2)';
+        card.style.transition = 'all 0.3s ease';
+        
+        setTimeout(() => {
+            card.style.transform = 'scale(1)';
+            card.style.boxShadow = '0 5px 15px rgba(0,0,0,0.1)';
+        }, 300);
+    }
+
+    // Fonction pour animer le badge du panier
+    function animateCartBadge() {
+        cartBadge.style.transform = 'scale(1.3)';
+        cartBadge.style.transition = 'transform 0.3s ease';
+        
+        setTimeout(() => {
+            cartBadge.style.transform = 'scale(1)';
+        }, 300);
+    }
+
+    // Fonction pour afficher des notifications toast
+    function showToast(message, type) {
+        const toast = document.createElement('div');
+        toast.className = `toast toast-${type}`;
+        toast.innerHTML = `
+            <div class="toast-icon">
+                <i class="fas ${type === 'success' ? 'fa-check-circle' : 'fa-exclamation-circle'}"></i>
+            </div>
+            <div class="toast-message">${message}</div>
+        `;
+        
+        document.body.appendChild(toast);
+        
+        // Affichage progressif
+        setTimeout(() => {
+            toast.style.opacity = '1';
+            toast.style.transform = 'translateY(0)';
+        }, 10);
+        
+        // Disparition après 3 secondes
+        setTimeout(() => {
+            toast.style.opacity = '0';
+            toast.style.transform = 'translateY(-20px)';
+            setTimeout(() => toast.remove(), 300);
+        }, 3000);
+    }
+
+    // Initialisation: met à jour le compteur au chargement
+    updateCartCount();
+});
 </script>
 </body>
 </html>

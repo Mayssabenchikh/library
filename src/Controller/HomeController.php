@@ -14,11 +14,10 @@ class HomeController extends AbstractController
     {
         // Récupération des derniers livres ajoutés (nouveautés)
         $featuredBooks = $bookRepository->findBy(
-            ['disponible' => true],
+            [],
             ['id' => 'DESC'],
             4
         );
-
         return $this->render('home/index.html.twig', [
             'featured_books' => $featuredBooks,
         ]);

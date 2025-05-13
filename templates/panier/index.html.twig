@@ -1,0 +1,410 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Votre Panier{% endblock %}
+
+{% block body %}
+<style>
+/* Variables */
+:root {
+  --primary-color: #8B4513;     /* Marron boisé */
+  --primary-light: #A0522D;     /* Marron plus clair */
+  --secondary-color: #F5F5DC;   /* Beige */
+  --text-color: #333;           /* Texte foncé */
+  --accent-color: #D2691E;      /* Accent chaleureux */
+  --danger-color: #8B0000;      /* Rouge foncé */
+  --success-color: #2E8B57;     /* Vert foncé */
+  --border-radius: 5px;
+  --box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  --font-family: 'Libre Baskerville', Georgia, serif;
+}
+
+/* Style général */
+body {
+  font-family: var(--font-family);
+  color: var(--text-color);
+  background-color: #F9F5EB;
+  line-height: 1.6;
+}
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 20px;
+}
+
+/* En-tête */
+header {
+  background-color: var(--primary-color);
+  color: white;
+  padding: 15px 0;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+}
+
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.navbar-brand {
+  font-size: 24px;
+  font-weight: bold;
+  color: white;
+  text-decoration: none;
+  letter-spacing: 1px;
+}
+
+.navbar-nav {
+  display: flex;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.nav-item {
+  margin-left: 20px;
+}
+
+.nav-link {
+  color: white;
+  text-decoration: none;
+  font-weight: 500;
+  transition: color 0.3s;
+}
+
+.nav-link:hover {
+  color: var(--secondary-color);
+}
+
+/* Hero section */
+.hero {
+  background-image: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), 
+                    url('../images/library-bg.jpg');
+  background-size: cover;
+  background-position: center;
+  color: white;
+  text-align: center;
+  padding: 100px 20px;
+  margin-bottom: 50px;
+}
+
+.hero h1 {
+  font-size: 48px;
+  margin-bottom: 20px;
+  font-weight: 700;
+}
+
+.hero p {
+  font-size: 20px;
+  max-width: 800px;
+  margin: 0 auto 30px;
+}
+
+/* Barre de recherche */
+.search-container {
+  position: relative;
+  max-width: 600px;
+  margin: 30px auto;
+}
+
+.search-input {
+  width: 100%;
+  padding: 15px 20px;
+  border: none;
+  border-radius: 30px;
+  font-size: 16px;
+  box-shadow: var(--box-shadow);
+}
+
+.search-button {
+  position: absolute;
+  right: 5px;
+  top: 5px;
+  background-color: var(--primary-color);
+  color: white;
+  border: none;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.search-button:hover {
+  background-color: var(--primary-light);
+}
+
+/* Boutons */
+.btn {
+  display: inline-block;
+  padding: 10px 20px;
+  border-radius: var(--border-radius);
+  text-decoration: none;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s;
+  border: none;
+}
+
+.btn-primary {
+  background-color: var(--primary-color);
+  color: white;
+}
+
+.btn-primary:hover {
+  background-color: var(--primary-light);
+}
+
+.btn-secondary {
+  background-color: var(--secondary-color);
+  color: var(--text-color);
+}
+
+.btn-secondary:hover {
+  background-color: #E8E8D0;
+}
+
+.btn-danger {
+  background-color: var(--danger-color);
+  color: white;
+}
+
+.btn-danger:hover {
+  background-color: #A52A2A;
+}
+
+.btn-sm {
+  padding: 5px 10px;
+  font-size: 14px;
+}
+
+/* Tableaux */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 30px;
+  background-color: white;
+  border-radius: var(--border-radius);
+  box-shadow: var(--box-shadow);
+}
+
+th, td {
+  padding: 15px;
+  text-align: left;
+  border-bottom: 1px solid #e0e0e0;
+}
+
+th {
+  background-color: var(--secondary-color);
+  font-weight: 600;
+}
+
+tbody tr:hover {
+  background-color: #f9f9f9;
+}
+
+tfoot {
+  font-weight: bold;
+}
+
+tfoot td {
+  border-top: 2px solid #e0e0e0;
+}
+
+.text-right {
+  text-align: right;
+}
+
+/* Alertes */
+.alert {
+  padding: 15px;
+  margin-bottom: 20px;
+  border-radius: var(--border-radius);
+  box-shadow: var(--box-shadow);
+}
+
+.alert-info {
+  background-color: #E6F7FF;
+  color: #0066CC;
+  border: 1px solid #B8E2FF;
+}
+
+.alert-success {
+  background-color: #EDF7ED;
+  color: var(--success-color);
+  border: 1px solid #C8E6C9;
+}
+
+.alert-danger {
+  background-color: #FFF1F0;
+  color: var(--danger-color);
+  border: 1px solid #FFCCC7;
+}
+
+/* Titres */
+h1 {
+  font-size: 32px;
+  margin-bottom: 25px;
+  color: var(--primary-color);
+  font-weight: 700;
+}
+
+/* Icônes */
+.fas {
+  margin-right: 5px;
+}
+
+/* Panier spécifique */
+.cart-icon {
+  position: relative;
+  font-size: 24px;
+}
+
+.cart-count {
+  position: absolute;
+  top: -10px;
+  right: -10px;
+  background-color: var(--accent-color);
+  color: white;
+  border-radius: 50%;
+  width: 20px;
+  height: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  font-weight: bold;
+}
+
+/* Footer */
+footer {
+  background-color: var(--primary-color);
+  color: white;
+  padding: 40px 0;
+  margin-top: 50px;
+}
+
+.footer-content {
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+}
+
+.footer-section {
+  flex: 1;
+  min-width: 250px;
+  margin-bottom: 20px;
+}
+
+.footer-section h3 {
+  font-size: 18px;
+  margin-bottom: 15px;
+  border-bottom: 2px solid var(--accent-color);
+  padding-bottom: 5px;
+  display: inline-block;
+}
+
+.footer-links {
+  list-style: none;
+  padding: 0;
+}
+
+.footer-links li {
+  margin-bottom: 8px;
+}
+
+.footer-links a {
+  color: #ddd;
+  text-decoration: none;
+  transition: color 0.3s;
+}
+
+.footer-links a:hover {
+  color: white;
+}
+
+.copyright {
+  text-align: center;
+  margin-top: 30px;
+  padding-top: 20px;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .navbar {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  
+  .navbar-nav {
+    flex-direction: column;
+    width: 100%;
+    margin-top: 15px;
+  }
+  
+  .nav-item {
+    margin: 5px 0;
+    margin-left: 0;
+  }
+  
+  .hero h1 {
+    font-size: 36px;
+  }
+  
+  .hero p {
+    font-size: 18px;
+  }
+  
+  .footer-section {
+    flex: 100%;
+  }
+}
+</style>
+<div class="container mt-5">
+    <h1>Votre Panier</h1>
+    
+    {% if items|length > 0 %}
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Livre</th>
+                    <th>Prix</th>
+                    <th>Quantité</th>
+                    <th>Total</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in items %}
+                    <tr>
+                        <td>{{ item.livre.titre }}</td>
+                        <td>{{ item.livre.prix }} €</td>
+                        <td>{{ item.quantity }}</td>
+                        <td>{{ item.livre.prix * item.quantity }} €</td>
+                        <td>
+                            <a href="{{ path('app_panier_remove', {'id': item.livre.id}) }}" class="btn btn-danger btn-sm">
+                                <i class="fas fa-trash"></i>
+                            </a>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+            <tfoot>
+                <tr>
+                    <td colspan="3" class="text-right">Total :</td>
+                   <td>{{ total }} €</td>
+                    <td></td>
+                </tr>
+            </tfoot>
+        </table>
+    {% else %}
+        <div class="alert alert-info">
+            Votre panier est vide.
+        </div>
+    {% endif %}
+</div>
+{% endblock %}

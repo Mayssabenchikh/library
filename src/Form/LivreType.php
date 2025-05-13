@@ -30,6 +30,7 @@ class LivreType extends AbstractType
             ->add('image', TextType::class, [
                 'required' => true,
             ])
+            ->add('prix') 
         ;
     }
 
