@@ -21,11 +21,11 @@ class LivreType extends AbstractType
             ->add('disponible')
             ->add('auteur', EntityType::class, [
                 'class' => Auteur::class,
-                'choice_label' => 'id',
+                'choice_label' => 'nom',
             ])
             ->add('genre', EntityType::class, [
                 'class' => Genre::class,
-                'choice_label' => 'id',
+                'choice_label' => 'nom',
             ])
             ->add('image', TextType::class, [
                 'required' => true,

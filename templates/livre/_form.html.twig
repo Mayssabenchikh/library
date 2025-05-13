@@ -1,4 +1,78 @@
-{{ form_start(form) }}
-    {{ form_widget(form) }}
-    <button class="btn">{{ button_label|default('Save') }}</button>
-{{ form_end(form) }}
+{% extends 'base.html.twig' %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="{{ asset('styles/library-theme.css') }}">
+{% endblock %}
+
+{% block title %}Nouvelle Œuvre{% endblock %}
+
+{% block body %}
+    <div class="container">
+        <main>
+            <h1>
+                <i class="fas fa-book"></i>
+                Ajouter un nouveau livre
+            </h1>
+            
+            <div class="form-container">
+                {{ form_start(form, {'attr': {'class': 'book-form'}}) }}
+                    
+                    <div class="form-group">
+                        <label for="{{ form.titre.vars.id }}">Titre</label>
+                        {{ form_widget(form.titre, {'attr': {'placeholder': 'Entrez le titre du livre', 'class': 'form-input'}}) }}
+                        {{ form_errors(form.titre) }}
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="{{ form.isbn.vars.id }}">ISBN</label>
+                        {{ form_widget(form.isbn, {'attr': {'placeholder': 'Entrez le numéro ISBN', 'class': 'form-input'}}) }}
+                        {{ form_errors(form.isbn) }}
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="{{ form.auteur.vars.id }}">Auteur</label>
+                        {{ form_widget(form.auteur, {'attr': {'class': 'form-input'}}) }}
+                        {{ form_errors(form.auteur) }}
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="{{ form.genre.vars.id }}">Genre</label>
+                        {{ form_widget(form.genre, {'attr': {'class': 'form-input'}}) }}
+                        {{ form_errors(form.genre) }}
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="{{ form.image.vars.id }}">Image de couverture</label>
+                        {{ form_widget(form.image, {'attr': {'placeholder': 'URL de l\'image', 'class': 'form-input'}}) }}
+                        {{ form_errors(form.image) }}
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="{{ form.prix.vars.id }}">Prix</label>
+                        {{ form_widget(form.prix, {'attr': {'placeholder': 'Prix du livre', 'class': 'form-input'}}) }}
+                        {{ form_errors(form.prix) }}
+                    </div>
+                    
+                    <div class="form-group checkbox-group">
+                        {{ form_widget(form.disponible, {'attr': {'class': 'form-checkbox'}}) }}
+                        <label for="{{ form.disponible.vars.id }}" class="checkbox-label">Disponible</label>
+                        {{ form_errors(form.disponible) }}
+                    </div>
+                    
+                    <div class="form-actions">
+                        <button type="submit" class="btn btn-add">
+                            <i class="fas fa-save btn-icon"></i> Enregistrer
+                        </button>
+                    </div>
+                {{ form_end(form) }}
+            </div>
+            
+            <a href="{{ path('app_livre_index') }}" class="back-link">
+                <span>Retour à la liste</span>
+            </a>
+        </main>
+    </div>
+{% endblock %}
