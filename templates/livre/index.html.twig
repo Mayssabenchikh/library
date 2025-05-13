@@ -28,7 +28,7 @@
             {% for livre in livres %}
                 <div class="livre-card" data-titre="{{ livre.titre|lower }}">
                     <div class="livre-header">
-                        <span class="livre-id">#{{ livre.id }}</span>
+<img src="{{ livre.image }}" alt="Couverture de {{ livre.titre }}" class="livre-image">
                         <span class="livre-status {% if livre.disponible %}disponible-oui{% else %}disponible-non{% endif %}">
                             {{ livre.disponible ? 'Disponible' : 'Indisponible' }}
                         </span>
