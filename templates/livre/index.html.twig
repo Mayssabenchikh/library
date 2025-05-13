@@ -14,10 +14,11 @@
 <div class="bibliotheque-wrapper">
     <h1>Bibliothèque - Collection de Livres</h1>
     
-    <form action="{{path('app_livre_index')}}"  method="GET" class="search-container">
-    <input type="text" name="search" class="search-input" placeholder="Rechercher un livre, un auteur..." required>
-    <button type="submit" class="search-btn"><i class="fas fa-search"></i></button>
-</form>
+    <form action="{{ path('app_livre_index') }}" method="GET" class="search-container">
+        <input type="text" name="search" id="searchInput" class="search-input" placeholder="Rechercher un livre, un auteur..." required>
+        <button type="submit" class="search-btn"><i class="fas fa-search"></i></button>
+    </form>
+    
     {% if livres is empty %}
         <div class="empty-state">
             <i class="fas fa-book-open empty-icon"></i>
@@ -27,8 +28,8 @@
         <div class="livres-grid">
             {% for livre in livres %}
                 <div class="livre-card" data-titre="{{ livre.titre|lower }}">
+                    <img src="{{ livre.image }}" alt="Couverture de {{ livre.titre }}" class="livre-image">
                     <div class="livre-header">
-<img src="{{ livre.image }}" alt="Couverture de {{ livre.titre }}" class="livre-image">
                         <span class="livre-status {% if livre.disponible %}disponible-oui{% else %}disponible-non{% endif %}">
                             {{ livre.disponible ? 'Disponible' : 'Indisponible' }}
                         </span>

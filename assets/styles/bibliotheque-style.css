@@ -59,7 +59,6 @@ h1::after {
 }
 
 /* Barre de recherche */
-/* Barre de recherche */
 .search-container {
     display: flex;
     justify-content: center;
@@ -100,14 +99,33 @@ h1::after {
 }
 
 .search-btn:hover {
-    color: var(--secondary-color);
+    color: var(--accent-color);
 }
+
 /* Grid de livres */
 .livres-grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
     gap: 1.5rem;
     margin-top: 2rem;
+}
+
+/* Couverture de livre */
+.livre-image {
+    width: 100%;
+    height: auto;
+    max-height: 300px;
+    object-fit: contain;
+    border-radius: var(--border-radius);
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    margin-bottom: 15px;
+    transition: var(--transition);
+    background-color: #f9f9f9;
+    padding: 10px;
+}
+
+.livre-card:hover .livre-image {
+    transform: scale(1.02);
 }
 
 /* Carte de livre */
@@ -421,6 +439,12 @@ body.loading .loader {
 }
 
 /* Responsive */
+@media (max-width: 992px) {
+    .livres-grid {
+        grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+    }
+}
+
 @media (max-width: 768px) {
     .bibliotheque-wrapper {
         padding: 1.5rem;
@@ -433,7 +457,22 @@ body.loading .loader {
     }
     
     .livres-grid {
+        grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    }
+}
+
+@media (max-width: 576px) {
+    .livres-grid {
         grid-template-columns: 1fr;
+    }
+    
+    .livre-header {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+    
+    .livre-status {
+        margin-top: 0.5rem;
     }
 }
 
@@ -469,4 +508,4 @@ body.loading .loader {
         transform: scale(1);
         opacity: 1;
     }
-}   
+}
