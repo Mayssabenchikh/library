@@ -11,6 +11,7 @@
                 <th>Id</th>
                 <th>Nom</th>
                 <th>Description</th>
+                <th>Livres</th>
                 <th>actions</th>
             </tr>
         </thead>
@@ -21,13 +22,24 @@
                 <td>{{ genre.nom }}</td>
                 <td>{{ genre.description }}</td>
                 <td>
+                    {% if genre.livre is not empty %}
+                        <ul>
+                        {% for livre in genre.livre %}
+                            <li>{{ livre.titre }}</li>
+                        {% endfor %}
+                        </ul>
+                    {% else %}
+                        Aucun livre
+                    {% endif %}
+                </td>
+                <td>
                     <a href="{{ path('app_genre_show', {'id': genre.id}) }}">show</a>
                     <a href="{{ path('app_genre_edit', {'id': genre.id}) }}">edit</a>
                 </td>
             </tr>
         {% else %}
             <tr>
-                <td colspan="4">no records found</td>
+                <td colspan="5">no records found</td>
             </tr>
         {% endfor %}
         </tbody>

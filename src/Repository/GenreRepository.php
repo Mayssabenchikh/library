@@ -40,4 +40,12 @@ class GenreRepository extends ServiceEntityRepository
     //            ->getOneOrNullResult()
     //        ;
     //    }
+    public function findAllWithBooks(): array
+{
+    return $this->createQueryBuilder('g')
+        ->leftJoin('g.livre', 'l')
+        ->addSelect('l')
+        ->getQuery()
+        ->getResult();
+}
 }
