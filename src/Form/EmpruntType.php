@@ -17,18 +17,13 @@ class EmpruntType extends AbstractType
         $builder
             ->add('date_emprunt', null, [
                 'widget' => 'single_text',
+                'label' => 'Date d\'emprunt',
             ])
             ->add('date_retour', null, [
                 'widget' => 'single_text',
+                'label' => 'Date de retour prévue',
             ])
-            ->add('livre', EntityType::class, [
-                'class' => Livre::class,
-                'choice_label' => 'id',
-            ])
-            ->add('utilisateur', EntityType::class, [
-                'class' => User::class,
-                'choice_label' => 'id',
-            ])
+            
         ;
     }
 

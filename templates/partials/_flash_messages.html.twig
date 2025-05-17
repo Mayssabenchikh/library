@@ -1,0 +1,43 @@
+{# templates/partials/_flash_messages.html.twig #}
+
+{% if app.flashes is defined and app.flashes is not empty %}
+    <div class="flash-messages">
+        {% for label, messages in app.flashes %}
+            {% for message in messages %}
+                <div class="toast toast-{{ label }} show">
+                    <div class="toast-icon">
+                        {% if label == 'success' %}
+                            <i class="fas fa-check-circle"></i>
+                        {% elseif label == 'error' %}
+                            <i class="fas fa-exclamation-circle"></i>
+                        {% else %}
+                            <i class="fas fa-info-circle"></i>
+                        {% endif %}
+                    </div>
+                    <div class="toast-message">{{ message }}</div>
+                </div>
+            {% endfor %}
+        {% endfor %}
+    </div>
+
+    <script>
+        // Afficher les notifications pendant 5 secondes puis les faire disparaître
+        document.addEventListener('DOMContentLoaded', function() {
+            const toasts = document.querySelectorAll('.toast');
+            
+            toasts.forEach(toast => {
+                toast.style.opacity = "1";
+                toast.style.transform = "translateY(0)";
+                
+                setTimeout(() => {
+                    toast.style.opacity = "0";
+                    toast.style.transform = "translateY(20px)";
+                    
+                    setTimeout(() => {
+                        toast.remove();
+                    }, 300);
+                }, 5000);
+            });
+        });
+    </script>
+{% endif %}

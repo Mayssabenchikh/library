@@ -1,0 +1,1242 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Mon Compte - Bibliothèque
+{% endblock %}
+
+{% block stylesheets %}
+	{{ parent() }}
+	<style>:root
+	{
+		/* Palette de couleurs modernes */
+		--primary: #6d4c41; /* Marron chaleureux */
+		--primary-light: #9c786c; /* Marron clair */
+		--primary-dark: #D2691E; /* Marron foncé */
+		--secondary: #5c6bc0; /* Bleu indigo */
+		--secondary-light: #8e99f3; /* Bleu clair */
+		--secondary-dark: #26418f; /* Bleu foncé */
+		--accent: #ff9800; /* Orange vif pour accent */
+		--background: #f5f5f5; /* Gris très clair */
+		--surface: #ffffff; /* Blanc */
+		--dark: #2d3436; /* Presque noir */
+		--text: #333333; /* Gris foncé pour le texte */
+		--text-light: #666666; /* Gris moyen pour le texte secondaire */
+		--success: #4caf50; /* Vert */
+		--info: #2196f3; /* Bleu */
+		--warning: #ff9800; /* Orange */
+		--danger: #f44336; /* Rouge */
+
+		/* Espacement et dimensions */
+		--spacing-xs: 0.25rem;
+		--spacing-sm: 0.5rem;
+		--spacing-md: 1rem;
+		--spacing-lg: 1.5rem;
+		--spacing-xl: 2rem;
+		--spacing-xxl: 3rem;
+
+		/* Typographie */
+		--font-primary: 'Montserrat', sans-serif;
+		--font-secondary: 'Playfair Display', serif;
+		--font-size-base: 1rem;
+		--font-size-sm: 0.875rem;
+		--font-size-lg: 1.125rem;
+		--font-size-xl: 1.5rem;
+		--font-size-xxl: 2rem;
+		--font-size-display: 3rem;
+
+		/* Ombres et effets */
+		--shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.05);
+		--shadow-md: 0 4px 6px rgba(0, 0, 0, 0.1);
+		--shadow-lg: 0 10px 15px rgba(0, 0, 0, 0.1);
+		--transition-fast: all 0.2s ease;
+		--transition-normal: all 0.3s ease;
+		--transition-slow: all 0.5s ease;
+
+		/* Arrondis */
+		--radius-sm: 4px;
+		--radius-md: 8px;
+		--radius-lg: 16px;
+		--radius-xl: 24px;
+		--radius-circle: 50%;
+	}
+
+	/* Importation des polices */
+	@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,600;1,400&display=swap');
+
+	/* Styles de base */
+	* {
+		margin: 0;
+		padding: 0;
+		box-sizing: border-box;
+	}
+
+	body {
+		font-family: var(--font-primary);
+		font-size: var(--font-size-base);
+		color: var(--text);
+		background-color: var(--background);
+		line-height: 1.6;
+	}
+
+	h1,
+	h2,
+	h3,
+	h4,
+	h5,
+	h6 {
+		font-family: var(--font-secondary);
+		color: var(--dark);
+		margin-bottom: var(--spacing-md);
+		letter-spacing: 0.02em;
+	}
+
+	a {
+		color: var(--primary);
+		text-decoration: none;
+		transition: var(--transition-fast);
+	}
+
+	a:hover {
+		color: var(--secondary);
+	}
+
+	/* Navigation principale */
+	.navbar {
+		background-color: var(--surface);
+		box-shadow: var(--shadow-md);
+		position: sticky;
+		top: 0;
+		z-index: 1000;
+		transition: var(--transition-normal);
+	}
+
+	.navbar.scrolled {
+		box-shadow: var(--shadow-lg);
+		background-color: rgba(255, 255, 255, 0.98);
+	}
+
+	.navbar-brand {
+		font-family: var(--font-secondary);
+		font-size: var(--font-size-xl);
+		font-weight: 600;
+		color: var(--primary);
+	}
+
+	.navbar-brand span {
+		color: var(--accent);
+	}
+
+	.nav-link {
+		position: relative;
+		font-weight: 500;
+		text-transform: uppercase;
+		letter-spacing: 0.05em;
+		font-size: var(--font-size-sm);
+		padding: var(--spacing-md) var(--spacing-lg);
+	}
+
+	.nav-link::after {
+		content: '';
+		position: absolute;
+		width: 0;
+		height: 3px;
+		bottom: 0;
+		left: 50%;
+		background-color: var(--accent);
+		transition: var(--transition-normal);
+		transform: translateX(-50%);
+	}
+
+	.nav-link:hover::after,
+	.nav-link.active::after {
+		width: 70%;
+	}
+
+	/* Section compte utilisateur */
+	.account-section {
+		padding: var(--spacing-xxl) 10%;
+		background: var(--background);
+		min-height: 70vh;
+		position: relative;
+	}
+
+	.account-section::before {
+		content: '';
+		position: absolute;
+		top: 0;
+		left: 0;
+		right: 0;
+		height: 180px;
+		background: linear-gradient(135deg, var(--primary-light), var(--primary-dark));
+		z-index: 0;
+		clip-path: polygon(0 0, 100% 0, 100% 65%, 0 100%);
+	}
+
+	.account-header {
+		margin-bottom: var(--spacing-xxl);
+		text-align: center;
+		position: relative;
+		z-index: 1;
+	}
+
+	.account-header h1 {
+		font-size: var(--font-size-display);
+		color: var(--surface);
+		position: relative;
+		padding-bottom: var(--spacing-md);
+		display: inline-block;
+	}
+
+	.account-header h1::after {
+		content: '';
+		position: absolute;
+		width: 100px;
+		height: 4px;
+		background: var(--accent);
+		bottom: 0;
+		left: 50%;
+		transform: translateX(-50%);
+		border-radius: var(--radius-sm);
+	}
+
+	.account-container {
+		display: grid;
+		grid-template-columns: 1fr 3fr;
+		gap: var(--spacing-xl);
+		position: relative;
+		z-index: 1;
+	}
+
+	/* Sidebar de navigation */
+	.account-sidebar {
+		background: var(--surface);
+		border-radius: var(--radius-lg);
+		padding: var(--spacing-xl);
+		box-shadow: var(--shadow-lg);
+		position: sticky;
+		top: calc(80px + var(--spacing-xl));
+		height: fit-content;
+		transition: var(--transition-normal);
+		transform-origin: center;
+	}
+
+	.account-sidebar:hover {
+		transform: translateY(-5px);
+	}
+
+	.account-nav {
+		list-style: none;
+	}
+
+	.account-nav li {
+		margin-bottom: var(--spacing-sm);
+	}
+
+	.account-nav a {
+		display: flex;
+		align-items: center;
+		padding: var(--spacing-md);
+		border-radius: var(--radius-md);
+		text-decoration: none;
+		color: var(--text);
+		transition: var(--transition-normal);
+		font-weight: 500;
+		gap: var(--spacing-md);
+	}
+
+	.account-nav a:hover {
+		background: rgba(109, 76, 65, 0.08);
+		color: var(--primary);
+		transform: translateX(5px);
+	}
+
+	.account-nav a.active {
+		background: rgba(109, 76, 65, 0.12);
+		color: var(--primary);
+		font-weight: 600;
+		border-left: 4px solid var(--primary);
+	}
+
+	.account-nav a::before {
+		font-family: "Font Awesome 5 Free";
+		font-weight: 900;
+		font-size: var(--font-size-lg);
+		transition: var(--transition-normal);
+	}
+
+	.account-nav a[data-tab="profile"]::before {
+		content: "\f007"; /* user icon */
+	}
+
+	.account-nav a[data-tab="emprunts"]::before {
+		content: "\f02d"; /* book icon */
+	}
+
+	.account-nav a[data-tab="history"]::before {
+		content: "\f1da"; /* history icon */
+	}
+
+	/* Contenu principal */
+	.account-content {
+		background: var(--surface);
+		border-radius: var(--radius-lg);
+		padding: var(--spacing-xxl);
+		box-shadow: var(--shadow-lg);
+		transition: var(--transition-normal);
+	}
+
+	.account-content h2 {
+		font-size: var(--font-size-xxl);
+		margin-bottom: var(--spacing-xl);
+		position: relative;
+		display: inline-block;
+	}
+
+	.account-content h2::after {
+		content: '';
+		position: absolute;
+		width: 60px;
+		height: 3px;
+		background: var(--accent);
+		bottom: -10px;
+		left: 0;
+		border-radius: var(--radius-sm);
+	}
+
+	/* Profil utilisateur */
+	.profile-info {
+		display: grid;
+		grid-template-columns: 1fr 2fr;
+		gap: var(--spacing-xl);
+		margin-bottom: var(--spacing-xl);
+		background: linear-gradient(to right, rgba(255, 255, 255, 0.7), rgba(245, 245, 245, 0.4));
+		border-radius: var(--radius-lg);
+		padding: var(--spacing-lg);
+		box-shadow: var(--shadow-sm);
+	}
+
+	.profile-avatar {
+		text-align: center;
+	}
+
+	.avatar-circle {
+		width: 160px;
+		height: 160px;
+		border-radius: var(--radius-circle);
+		background: linear-gradient(45deg, var(--primary), var(--secondary));
+		color: var(--surface);
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		font-size: var(--font-size-xxl);
+		font-weight: 600;
+		margin: 0 auto var(--spacing-md);
+		box-shadow: var(--shadow-md);
+		position: relative;
+		transition: var(--transition-normal);
+		border: 5px solid var(--surface);
+	}
+
+	.avatar-circle:hover {
+		transform: scale(1.05) rotate(5deg);
+		box-shadow: var(--shadow-lg);
+	}
+
+	.avatar-options {
+		display: flex;
+		justify-content: center;
+		gap: var(--spacing-sm);
+		margin-top: var(--spacing-md);
+	}
+
+	.avatar-options button {
+		background: transparent;
+		border: 2px solid var(--primary);
+		color: var(--primary);
+		padding: var(--spacing-sm) var(--spacing-md);
+		border-radius: var(--radius-md);
+		cursor: pointer;
+		transition: var(--transition-normal);
+		font-weight: 500;
+		text-transform: uppercase;
+		font-size: var(--font-size-sm);
+		letter-spacing: 0.05em;
+	}
+
+	.avatar-options button:hover {
+		background: var(--primary);
+		color: var(--surface);
+		transform: translateY(-3px);
+		box-shadow: var(--shadow-md);
+	}
+
+	.profile-details {
+		padding: var(--spacing-md);
+	}
+
+	.detail-row {
+		display: flex;
+		margin-bottom: var(--spacing-md);
+		align-items: center;
+		padding: var(--spacing-sm) 0;
+		border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+		transition: var(--transition-fast);
+	}
+
+	.detail-row:hover {
+		background-color: rgba(245, 245, 245, 0.7);
+		border-radius: var(--radius-sm);
+		transform: translateX(5px);
+		border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+	}
+
+	.detail-label {
+		width: 120px;
+		font-weight: 600;
+		color: var(--primary-dark);
+	}
+
+	.detail-value {
+		flex-grow: 1;
+		color: var(--text);
+		letter-spacing: 0.03em;
+	}
+
+	/* Onglets */
+	.tabs {
+		display: flex;
+		border-bottom: 1px solid #dee2e6;
+		margin-bottom: var(--spacing-xl);
+		background: rgba(245, 245, 245, 0.5);
+		border-radius: var(--radius-md) var(--radius-md) 0 0;
+		overflow: hidden;
+	}
+
+	.tab-btn {
+		padding: var(--spacing-md) var(--spacing-lg);
+		border: none;
+		background: transparent;
+		cursor: pointer;
+		font-weight: 600;
+		color: var(--text-light);
+		transition: var(--transition-normal);
+		border-bottom: 3px solid transparent;
+		position: relative;
+		overflow: hidden;
+		flex-grow: 1;
+		text-transform: uppercase;
+		letter-spacing: 0.05em;
+		font-size: var(--font-size-sm);
+	}
+
+	.tab-btn::before {
+		content: '';
+		position: absolute;
+		width: 100%;
+		height: 3px;
+		bottom: 0;
+		left: 0;
+		background-color: var(--accent);
+		transform: translateX(-100%);
+		transition: transform 0.3s ease;
+	}
+
+	.tab-btn.active::before {
+		transform: translateX(0);
+	}
+
+	.tab-btn.active {
+		color: var(--primary);
+		background-color: rgba(255, 255, 255, 0.8);
+	}
+
+	.tab-btn:hover:not(.active) {
+		color: var(--secondary);
+		background-color: rgba(255, 255, 255, 0.5);
+	}
+
+	.tab-content {
+		padding: var(--spacing-md) 0;
+		display: none;
+		animation: fadeIn 0.5s ease;
+	}
+
+	@keyframes fadeIn {
+		from {
+			opacity: 0;
+			transform: translateY(10px);
+		}
+		to {
+			opacity: 1;
+			transform: translateY(0);
+		}
+	}
+
+	.tab-content.active {
+		display: block;
+	}
+
+	/* Formulaires */
+	.settings-form {
+		max-width: 800px;
+		margin: 0 auto;
+	}
+
+	.settings-form .form-group {
+		margin-bottom: var(--spacing-lg);
+		position: relative;
+	}
+
+	.settings-form label {
+		display: block;
+		margin-bottom: var(--spacing-sm);
+		font-weight: 600;
+		color: var(--text);
+		letter-spacing: 0.03em;
+		transition: var(--transition-fast);
+	}
+
+	.settings-form .form-group:focus-within label {
+		color: var(--primary);
+	}
+
+	.settings-form input {
+		width: 100%;
+		padding: var(--spacing-md);
+		border: 2px solid #e0e0e0;
+		border-radius: var(--radius-md);
+		font-size: var(--font-size-base);
+		transition: var(--transition-normal);
+		background-color: rgba(255, 255, 255, 0.8);
+	}
+
+	.settings-form input:focus {
+		outline: none;
+		border-color: var(--primary);
+		box-shadow: 0 0 0 3px rgba(109, 76, 65, 0.2);
+		background-color: var(--surface);
+	}
+
+	.btn-update {
+		background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+		color: var(--surface);
+		padding: var(--spacing-md) var(--spacing-xl);
+		border: none;
+		border-radius: var(--radius-md);
+		cursor: pointer;
+		font-weight: 600;
+		transition: var(--transition-normal);
+		text-transform: uppercase;
+		letter-spacing: 0.05em;
+		box-shadow: var(--shadow-sm);
+		display: inline-block;
+		position: relative;
+		overflow: hidden;
+	}
+
+	.btn-update::after {
+		content: '';
+		position: absolute;
+		width: 100%;
+		height: 100%;
+		top: 0;
+		left: -100%;
+		background: linear-gradient(90deg, rgba(255, 255, 255, 0), rgba(255, 255, 255, 0.2), rgba(255, 255, 255, 0));
+		transition: var(--transition-slow);
+	}
+
+	.btn-update:hover {
+		transform: translateY(-3px);
+		box-shadow: var(--shadow-md);
+		background: linear-gradient(135deg, var(--primary-dark), var(--primary));
+	}
+
+	.btn-update:hover::after {
+		left: 100%;
+	}
+
+	.btn-update:active {
+		transform: translateY(1px);
+		box-shadow: var(--shadow-sm);
+	}
+
+	/* Emprunts et historique */
+	.history-item {
+		border-bottom: 1px solid #eee;
+		padding: var(--spacing-md) var(--spacing-sm);
+		display: flex;
+		justify-content: space-between;
+		align-items: center;
+		transition: var(--transition-normal);
+		border-radius: var(--radius-md);
+	}
+
+	.history-item:hover {
+		background-color: rgba(245, 245, 245, 0.7);
+		transform: translateX(5px);
+		box-shadow: var(--shadow-sm);
+	}
+
+	.history-item:last-child {
+		border-bottom: none;
+	}
+
+	.book-details {
+		display: flex;
+		align-items: center;
+		gap: var(--spacing-md);
+	}
+
+	.book-thumbnail {
+		width: 70px;
+		height: 100px;
+		border-radius: var(--radius-sm);
+		background: linear-gradient(to bottom, var(--primary-light), var(--primary));
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		color: var(--surface);
+		font-size: var(--font-size-xl);
+		transition: var(--transition-normal);
+		box-shadow: var(--shadow-sm);
+		position: relative;
+		overflow: hidden;
+	}
+
+	.book-thumbnail::after {
+		content: '';
+		position: absolute;
+		width: 100%;
+		height: 20%;
+		bottom: 0;
+		left: 0;
+		background: rgba(0, 0, 0, 0.1);
+	}
+
+	.book-thumbnail:hover {
+		transform: rotate(-5deg) scale(1.05);
+		box-shadow: var(--shadow-md);
+	}
+
+	.book-info h4 {
+		margin: 0 0 var(--spacing-xs);
+		color: var(--dark);
+		font-size: var(--font-size-lg);
+		transition: var(--transition-fast);
+	}
+
+	.history-item:hover .book-info h4 {
+		color: var(--primary);
+	}
+
+	.book-info p {
+		margin: 0;
+		color: var(--text-light);
+		font-size: var(--font-size-sm);
+	}
+
+	.borrow-status {
+		display: flex;
+		align-items: center;
+		gap: var(--spacing-sm);
+	}
+
+	.status-badge {
+		padding: var(--spacing-xs) var(--spacing-md);
+		border-radius: 20px;
+		font-size: var(--font-size-sm);
+		font-weight: 600;
+		transition: var(--transition-normal);
+	}
+
+	.status-badge:hover {
+		transform: scale(1.05);
+	}
+
+	.status-active {
+		background-color: rgba(76, 175, 80, 0.15);
+		color: #2e7d32;
+		border: 1px solid rgba(76, 175, 80, 0.3);
+	}
+
+	.status-returned {
+		background-color: rgba(33, 150, 243, 0.15);
+		color: #1565c0;
+		border: 1px solid rgba(33, 150, 243, 0.3);
+	}
+
+	.status-overdue {
+		background-color: rgba(244, 67, 54, 0.15);
+		color: #c62828;
+		border: 1px solid rgba(244, 67, 54, 0.3);
+	}
+
+	/* État vide */
+	.empty-state {
+		text-align: center;
+		padding: var(--spacing-xxl);
+		color: var(--text-light);
+		background: rgba(245, 245, 245, 0.5);
+		border-radius: var(--radius-lg);
+		transition: var(--transition-normal);
+	}
+
+	.empty-state:hover {
+		background: rgba(245, 245, 245, 0.8);
+		transform: translateY(-5px);
+		box-shadow: var(--shadow-md);
+	}
+
+	.empty-state i {
+		font-size: var(--font-size-display);
+		margin-bottom: var(--spacing-md);
+		color: var(--primary-light);
+		opacity: 0.6;
+	}
+
+	.empty-state h3 {
+		color: var(--primary);
+		margin-bottom: var(--spacing-sm);
+	}
+
+	/* Messages flash */
+	.alert {
+		padding: var(--spacing-md) var(--spacing-lg);
+		margin-bottom: var(--spacing-xl);
+		border-radius: var(--radius-md);
+		font-weight: 500;
+		position: relative;
+		animation: slideDown 0.5s ease;
+		border-left: 4px solid transparent;
+	}
+
+	@keyframes slideDown {
+		from {
+			opacity: 0;
+			transform: translateY(-20px);
+		}
+		to {
+			opacity: 1;
+			transform: translateY(0);
+		}
+	}
+
+	.alert-success {
+		background-color: rgba(76, 175, 80, 0.15);
+		color: #2e7d32;
+		border-left-color: var(--success);
+	}
+
+	.alert-danger {
+		background-color: rgba(244, 67, 54, 0.15);
+		color: #c62828;
+		border-left-color: var(--danger);
+	}
+	.btn-return {
+		background: linear-gradient(135deg, var(--secondary), var(--secondary-dark));
+		color: var(--surface);
+		padding: var(--spacing-xs) var(--spacing-md);
+		border: none;
+		border-radius: var(--radius-md);
+		cursor: pointer;
+		font-weight: 600;
+		transition: var(--transition-normal);
+		font-size: var(--font-size-sm);
+		text-transform: uppercase;
+		letter-spacing: 0.05em;
+		box-shadow: var(--shadow-sm);
+		display: inline-flex;
+		align-items: center;
+		gap: var(--spacing-xs);
+		margin-left: var(--spacing-sm);
+	}
+
+	.btn-return:hover {
+		transform: translateY(-3px);
+		box-shadow: var(--shadow-md);
+		background: linear-gradient(135deg, var(--secondary-dark), var(--secondary));
+	}
+
+	.btn-return:active {
+		transform: translateY(1px);
+		box-shadow: var(--shadow-sm);
+	}
+	/* Animations */
+	@keyframes pulse {
+		0% {
+			transform: scale(1);
+		}
+		50% {
+			transform: scale(1.05);
+		}
+		100% {
+			transform: scale(1);
+		}
+	}
+
+	/* Animations au survol pour l'interactivité */
+	.account-header h1:hover::after {
+		animation: pulse 1.5s infinite;
+	}
+
+	/* Responsive */
+	@media(max-width: 1200px) {
+		.account-section {
+			padding: var(--spacing-xl) 5%;
+		}
+	}
+
+	@media(max-width: 992px) {
+		.account-container {
+			grid-template-columns: 1fr;
+		}
+
+		.account-sidebar {
+			position: static;
+			margin-bottom: var(--spacing-xl);
+			background: linear-gradient(to right, var(--surface), rgba(255, 255, 255, 0.95));
+		}
+
+		.account-nav {
+			display: flex;
+			flex-wrap: wrap;
+			justify-content: center;
+			gap: var(--spacing-sm);
+		}
+
+		.account-nav a {
+			padding: var(--spacing-sm) var(--spacing-md);
+		}
+
+		.profile-info {
+			grid-template-columns: 1fr;
+		}
+
+		.account-header h1 {
+			font-size: var(--font-size-xxl);
+		}
+
+		.account-content {
+			padding: var(--spacing-xl);
+		}
+	}
+
+	@media(max-width: 768px) {
+		.account-section {
+			padding: var(--spacing-lg) 3%;
+		}
+
+		.account-section::before {
+			height: 150px;
+		}
+
+		.detail-row {
+			flex-direction: column;
+			align-items: flex-start;
+		}
+
+		.detail-label {
+			width: 100%;
+			margin-bottom: var(--spacing-xs);
+		}
+
+		.account-content h2 {
+			font-size: var(--font-size-xl);
+		}
+
+		.tabs {
+			flex-direction: column;
+		}
+
+		.history-item {
+			flex-direction: column;
+			align-items: flex-start;
+		}
+
+		.borrow-status {
+			margin-top: var(--spacing-md);
+			align-self: flex-end;
+		}
+	}
+
+	@media(max-width: 480px) {
+		.account-nav {
+			flex-direction: column;
+		}
+
+		.book-details {
+			flex-direction: column;
+			align-items: flex-start;
+		}
+
+		.book-thumbnail {
+			margin-bottom: var(--spacing-sm);
+		}
+
+		.avatar-circle {
+			width: 120px;
+			height: 120px;
+		}
+		}/* Ajouts pour améliorer l'accessibilité */:focus
+		{
+			outline: 3px solid rgba(92, 107, 192, 0.5);
+			outline-offset: 2px;
+		}
+
+		/* Transitions de pages pour un effet dynamique */
+		.page-transition {
+			animation: fadeIn 0.5s ease;
+		}
+
+		/* Mode sombre (préparation) */
+		@media(prefers-color-scheme: dark){:root {
+			--surface: #1e1e1e;
+			--background: #121212;
+			--text: #e0e0e0;
+			--text-light: #a0a0a0;
+			--dark: #f5f5f5;
+		};
+
+		/* Vous pouvez ajouter des ajustements spécifiques au mode sombre ici */
+	}
+
+	/* Effets d'encre au clic (style Material Design) */
+	.btn-update,
+	.tab-btn,
+	.account-nav a,
+	.avatar-options button {
+		position: relative;
+		overflow: hidden;
+	}
+
+	.ink {
+		position: absolute;
+		background: rgba(255, 255, 255, 0.3);
+		border-radius: 50%;
+		transform: scale(0);
+		animation: ripple 0.6s linear;
+		pointer-events: none;
+	}
+
+	@keyframes ripple {
+		to {
+			transform: scale(2.5);
+			opacity: 0;
+		}
+	}
+
+	/* Curseur personnalisé pour les éléments interactifs */
+	.account-nav a,
+	.tab-btn,
+	.btn-update,
+	.avatar-options button {
+		cursor: pointer;
+	}
+
+	/* Amélioration du design de formulaire avec effet flottant */
+	.settings-form .form-group {
+		position: relative;
+		margin-bottom: var(--spacing-xl);
+	}
+
+	.settings-form input:focus + label,
+	.settings-form input:not(:placeholder-shown) + label {
+		top: -25px;
+		left: 0;
+		font-size: var(--font-size-sm);
+		color: var(--primary);
+	}
+
+	/* Animations de chargement pour les actions asynchrones */
+	.loading {
+		position: relative;
+		pointer-events: none;
+	}
+
+	.loading::after {
+		content: '';
+		position: absolute;
+		top: 0;
+		left: 0;
+		width: 100%;
+		height: 100%;
+		background-color: rgba(255, 255, 255, 0.7);
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		border-radius: inherit;
+	}
+
+	.loading::before {
+		content: '';
+		width: 30px;
+		height: 30px;
+		border: 3px solid var(--primary-light);
+		border-top-color: var(--primary);
+		border-radius: 50%;
+		position: absolute;
+		top: calc(50% - 15px);
+		left: calc(50% - 15px);
+		z-index: 10;
+		animation: spin 1s linear infinite;
+	}
+
+	@keyframes spin {
+		to {
+			transform: rotate(360deg);
+		}
+	}
+
+	/* Styles pour précharger les icônes Font Awesome */
+	.preload-icons {
+		position: absolute;
+		visibility: hidden;
+		width: 0;
+		height: 0;
+		overflow: hidden;
+	}
+</style>{% endblock %}{% block body %}
+<section class="account-section">
+	<div class="account-header">
+		<h1>Mon Compte</h1>
+	</div>
+
+	<div
+		class="account-container">
+		<!-- Sidebar de navigation -->
+		<div class="account-sidebar">
+			<ul class="account-nav">
+				<li>
+					<a href="#profile" class="js-tab-link active" data-tab="profile">Mon profil</a>
+				</li>
+				<li>
+					<a href="#emprunts" class="js-tab-link" data-tab="emprunts">Mes emprunts</a>
+				</li>
+				<li>
+					<a href="#history" class="js-tab-link" data-tab="history">Historique</a>
+				</li>
+			</ul>
+		</div>
+
+		<!-- Contenu principal -->
+		<div
+			class="account-content">
+			<!-- Messages flash -->
+			{% for message in app.flashes('success') %}
+				<div class="alert alert-success">
+					{{ message }}
+				</div>
+			{% endfor %}
+
+			{% for message in app.flashes('error') %}
+				<div class="alert alert-danger">
+					{{ message }}
+				</div>
+			{% endfor %}
+
+			<!-- Onglet Profil -->
+			<div id="profile" class="tab-content active">
+				<h2>Informations personnelles</h2>
+
+				<div class="profile-info">
+					<div class="profile-details">
+						<div class="detail-row">
+							<div class="detail-label">Nom</div>
+							<div class="detail-value">{{ user.nom }}</div>
+						</div>
+						<div class="detail-row">
+							<div class="detail-label">Email</div>
+							<div class="detail-value">{{ user.email }}</div>
+						</div>
+						<div class="detail-row">
+							<div class="detail-label">Téléphone</div>
+							<div class="detail-value">{{ user.telephone }}</div>
+						</div>
+					</div>
+				</div>
+
+				<div class="tabs">
+					<button class="tab-btn active" data-tab="settings">Paramètres</button>
+					<button class="tab-btn" data-tab="security">Sécurité</button>
+				</div>
+
+				<div id="settings" class="tab-content active">
+					<form action="{{ path('app_user_update') }}" method="post" class="settings-form">
+						<div class="form-group">
+							<label for="nom">Nom complet</label>
+							<input type="text" id="nom" name="nom" value="{{ user.nom }}" required>
+						</div>
+
+						<div class="form-group">
+							<label for="email">Email</label>
+							<input type="email" id="email" name="email" value="{{ user.email }}" required>
+						</div>
+
+						<div class="form-group">
+							<label for="telephone">Téléphone</label>
+							<input type="tel" id="telephone" name="telephone" value="{{ user.telephone }}" required>
+						</div>
+
+						<button type="submit" class="btn-update">Mettre à jour</button>
+					</form>
+				</div>
+
+				<div id="security" class="tab-content">
+					<form action="{{ path('app_user_update') }}" method="post" class="settings-form">
+						<div class="form-group">
+							<label for="password">Nouveau mot de passe</label>
+							<input type="password" id="password" name="password">
+						</div>
+
+						<div class="form-group">
+							<label for="password_confirm">Confirmer le mot de passe</label>
+							<input type="password" id="password_confirm" name="password_confirm">
+						</div>
+
+						<button type="submit" class="btn-update">Changer le mot de passe</button>
+					</form>
+				</div>
+			</div>
+
+			<!-- Onglet Emprunts en cours -->
+			<div id="emprunts" class="tab-content">
+				<h2>Mes emprunts
+				</h2>
+
+				    {% set empruntsEnCours = user.empruntsEnCours %}
+
+
+				{% if empruntsEnCours|length > 0 %}
+					{% for emprunt in empruntsEnCours %}
+						<div class="history-item">
+							<div class="book-details">
+								<div class="book-thumbnail">
+									<i class="fas fa-book"></i>
+								</div>
+								<div class="book-info">
+									<h4>{{ emprunt.livre.titre }}</h4>
+									<p>Emprunté le
+										{{ emprunt.dateEmprunt|date('d/m/Y') }}</p>
+									<p>À retourner avant le
+										{{ emprunt.dateRetour|date('d/m/Y') }}</p>
+								</div>
+							</div>
+							<div class="borrow-status">
+								{% if date() > emprunt.dateRetour %}
+									<span class="status-badge status-overdue">En retard</span>
+								{% else %}
+									<span class="status-badge status-active">En cours</span>
+								{% endif %}
+								<a href="{{ path('app_livre_retourner', {'id': emprunt.id}) }}" class="btn-return">
+									<i class="fas fa-undo-alt"></i>
+									Retourner
+								</a>
+							</div>
+						</div>
+					{% endfor %}
+				{% else %}
+					<div class="empty-state">
+						<i class="fas fa-book-open"></i>
+						<h3>Aucun emprunt en cours</h3>
+						<p>Vous n'avez actuellement aucun livre emprunté.</p>
+					</div>
+				{% endif %}
+			</div>
+<!-- Nouvel onglet Historique - à ajouter après la div id="emprunts" -->
+<div id="history" class="tab-content">
+    <h2>Historique des emprunts</h2>
+    
+    {% if user.historiqueEmprunts|length > 0 %}
+        {% for emprunt in user.historiqueEmprunts %}
+            <div class="history-item">
+                <div class="book-details">
+                    <div class="book-thumbnail">
+                        <i class="fas fa-book"></i>
+                    </div>
+                    <div class="book-info">
+                        <h4>{{ emprunt.livre.titre }}</h4>
+                        <p>Emprunté le {{ emprunt.dateEmprunt|date('d/m/Y') }}</p>
+                        <p>Retourné le {{ emprunt.dateRetourEffective|date('d/m/Y') }}</p>
+                    </div>
+                </div>
+                <div class="borrow-status">
+                    <span class="status-badge status-returned">Retourné</span>
+                </div>
+            </div>
+        {% endfor %}
+    {% else %}
+        <div class="empty-state">
+            <i class="fas fa-history"></i>
+            <h3>Aucun historique</h3>
+            <p>Vous n'avez pas encore d'emprunts dans votre historique.</p>
+        </div>
+    {% endif %}
+</div>
+
+		</div>
+	</div>
+</section>{% endblock %}{% block javascripts %}
+{{ parent() }}
+<script>
+	document.addEventListener('DOMContentLoaded', function () { // Gestion des onglets principaux
+const tabLinks = document.querySelectorAll('.js-tab-link');
+const tabContents = document.querySelectorAll('.tab-content');
+
+tabLinks.forEach(link => {
+link.addEventListener('click', function (e) {
+e.preventDefault();
+const tabId = this.getAttribute('data-tab');
+
+// Désactiver tous les onglets
+tabLinks.forEach(link => link.classList.remove('active'));
+tabContents.forEach(content => content.classList.remove('active'));
+
+// Activer l'onglet sélectionné
+this.classList.add('active');
+document.getElementById(tabId).classList.add('active');
+
+// Mettre à jour l'URL sans recharger la page
+history.pushState(null, null, '#' + tabId);
+});
+});
+
+// Gestion des sous-onglets (paramètres/sécurité)
+const tabBtns = document.querySelectorAll('.tab-btn');
+
+tabBtns.forEach(btn => {
+btn.addEventListener('click', function () {
+const targetId = this.getAttribute('data-tab');
+
+// Désactiver tous les sous-onglets
+document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+document.querySelectorAll('#settings, #security').forEach(content => content.classList.remove('active'));
+
+// Activer le sous-onglet sélectionné
+this.classList.add('active');
+document.getElementById(targetId).classList.add('active');
+});
+});
+
+// Gestion de l'onglet actif à partir de l'URL
+if (window.location.hash) {
+const hash = window.location.hash.substring(1);
+const tabLink = document.querySelector (`.js-tab-link[data-tab="${hash}"]`);
+if (tabLink) {
+tabLink.click();
+}
+}
+
+// Validation du formulaire de changement de mot de passe
+const passwordForm = document.querySelector('#security form');
+if (passwordForm) {
+passwordForm.addEventListener('submit', function (e) {
+const password = document.getElementById('password').value;
+const passwordConfirm = document.getElementById('password_confirm').value;
+
+if (password !== passwordConfirm) {
+e.preventDefault();
+alert('Les mots de passe ne correspondent pas.');
+}
+});
+}
+});
+</script>{% endblock %}

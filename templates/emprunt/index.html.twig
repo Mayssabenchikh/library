@@ -1,37 +1,231 @@
+
 {% extends 'base.html.twig' %}
 
 {% block title %}Emprunt index{% endblock %}
 
-{% block body %}
-    <h1>Emprunt index</h1>
+{% block stylesheets %}
+{{ parent() }}
+<style>
+    :root {
+        --primary-color: #6d4c41; /* Marron chaleureux */
+        --secondary-color:rgb(133, 99, 87);
+        --accent-color:rgb(211, 173, 136);
+        --light-bg: #f5ebe0;
+        --dark-text: #2f2f2f;
+        --light-text: #f8f9fa;
+        --border-radius: 8px;
+        --box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    }
 
-    <table class="table">
+    body {
+        font-family: 'Libre Baskerville', Georgia, serif;
+        background-color: var(--light-bg);
+        color: var(--dark-text);
+        padding: 2rem;
+        line-height: 1.6;
+    }
+
+    .library-container {
+        max-width: 1200px;
+        margin: 0 auto;
+        background-color: white;
+        padding: 2rem;
+        border-radius: var(--border-radius);
+        box-shadow: var(--box-shadow);
+    }
+
+    .library-heading {
+        color: var(--primary-color);
+        font-size: 2.5rem;
+        margin-bottom: 1.5rem;
+        text-align: center;
+        border-bottom: 2px solid var(--secondary-color);
+        padding-bottom: 1rem;
+    }
+
+    .library-table {
+        width: 100%;
+        border-collapse: separate;
+        border-spacing: 0;
+        margin: 1.5rem 0;
+    }
+
+    .library-table th {
+        background-color: var(--primary-color);
+        color: var(--light-text);
+        padding: 1rem;
+        font-weight: 600;
+        text-align: left;
+    }
+
+    .library-table th:first-child {
+        border-top-left-radius: var(--border-radius);
+    }
+
+    .library-table th:last-child {
+        border-top-right-radius: var(--border-radius);
+        text-align: center;
+    }
+
+    .library-table td {
+        padding: 1rem;
+        border-bottom: 1px solid #e0e0e0;
+    }
+
+    .library-table tr:nth-child(even) {
+        background-color: rgba(129, 88, 88, 0.1);
+    }
+
+    .library-table tr:hover {
+        background-color: rgba(212, 163, 115, 0.15);
+    }
+
+    .library-table tr:last-child td:first-child {
+        border-bottom-left-radius: var(--border-radius);
+    }
+
+    .library-table tr:last-child td:last-child {
+        border-bottom-right-radius: var(--border-radius);
+    }
+
+    .action-links {
+        display: flex;
+        justify-content: center;
+        gap: 1rem;
+    }
+
+    .library-btn {
+        display: inline-block;
+        padding: 0.5rem 1rem;
+        background-color: var(--secondary-color);
+        color: var(--light-text);
+        text-decoration: none;
+        border-radius: var(--border-radius);
+        transition: all 0.3s ease;
+        font-size: 0.9rem;
+    }
+
+    .library-btn:hover {
+        background-color: var(--primary-color);
+        transform: translateY(-2px);
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+    }
+
+    .library-btn.view {
+        background-color: var(--secondary-color);
+    }
+
+    .library-btn.edit {
+        background-color: var(--accent-color);
+        color: var(--dark-text);
+    }
+
+    .library-no-records {
+        text-align: center;
+        padding: 2rem;
+        font-style: italic;
+        color: #666;
+    }
+
+    .library-footer {
+        text-align: center;
+        margin-top: 2rem;
+        padding-top: 1rem;
+        border-top: 1px solid var(--secondary-color);
+        color: #666;
+        font-size: 0.9rem;
+    }
+
+    .add-new-btn {
+        display: inline-block;
+        margin-top: 1rem;
+        padding: 0.8rem 1.5rem;
+        background-color: var(--primary-color);
+        color: var(--light-text);
+        text-decoration: none;
+        border-radius: var(--border-radius);library-date
+        transition: all 0.3s ease;
+        font-weight: 600;
+    }
+
+    .add-new-btn:hover {
+        background-color: var(--secondary-color);
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    }
+2025-05-16 22:05:00	
+    .library-date {
+        font-family: 'Courier New', monospace;
+        font-size: 0.9rem;
+    }
+</style>
+{% endblock %}
+
+{% block body %}
+<nav class="nav">
+			<a href="#" class="logo">Biblio<span>thèque</span>
+				<i class="fas fa-book" style="font-size: 0.9rem;"></i>
+			</a>
+
+			<div class="nav-links">
+				<a href="#">Accueil</a>
+				<a href="/auteur">Auteurs</a>
+				<a href="/genre">Genres</a>
+			</div>
+
+			<div class="cta-buttons">
+
+				{% if app.user %}
+					<div class="user-dropdown">
+						<span class="user-name">{{ app.user.nom }}
+							<i class="fas fa-chevron-down"></i>
+						</span>
+						<div class="dropdown-menu">
+							<a href="/account">
+								<i class="fas fa-user"></i>
+								Mon compte</a>
+							<a href="{{ path('app_logout') }}">
+								<i class="fas fa-sign-out-alt"></i>
+								Déconnexion</a>
+						</div>
+					</div>
+				{% else %}
+					<a href="/login" class="btn btn-outline">Connexion</a>
+					<a href="/register" class="btn btn-primary">Inscription</a>
+				{% endif %}
+			</div>
+		</nav>
+<div class="library-container">
+    <h1 class="library-heading">Registre des Emprunts</h1>
+
+    <table class="library-table">
         <thead>
             <tr>
-                <th>Id</th>
-                <th>Date_emprunt</th>
-                <th>Date_retour</th>
-                <th>actions</th>
+                <th>Date d'emprunt</th>
+                <th>Date de retour</th>
+                <th>Actions</th>
             </tr>
         </thead>
         <tbody>
         {% for emprunt in emprunts %}
             <tr>
-                <td>{{ emprunt.id }}</td>
-                <td>{{ emprunt.dateEmprunt ? emprunt.dateEmprunt|date('Y-m-d H:i:s') : '' }}</td>
-                <td>{{ emprunt.dateRetour ? emprunt.dateRetour|date('Y-m-d H:i:s') : '' }}</td>
-                <td>
-                    <a href="{{ path('app_emprunt_show', {'id': emprunt.id}) }}">show</a>
-                    <a href="{{ path('app_emprunt_edit', {'id': emprunt.id}) }}">edit</a>
+                <td class="library-date">{{ emprunt.dateEmprunt ? emprunt.dateEmprunt|date('Y-m-d H:i:s') : '' }}</td>
+                <td class="library-date">{{ emprunt.dateRetour ? emprunt.dateRetour|date('Y-m-d H:i:s') : '' }}</td>
+                <td class="action-links">
+                    <a href="{{ path('app_emprunt_show', {'id': emprunt.id}) }}" class="library-btn view">Consulter</a>
+                    <a href="{{ path('app_emprunt_edit', {'id': emprunt.id}) }}" class="library-btn edit">Modifier</a>
                 </td>
             </tr>
         {% else %}
             <tr>
-                <td colspan="4">no records found</td>
+                <td colspan="4" class="library-no-records">Aucun emprunt trouvé</td>
             </tr>
         {% endfor %}
         </tbody>
     </table>
 
-    <a href="{{ path('app_emprunt_new') }}">Create new</a>
+    
+    
+    
+</div>
 {% endblock %}

@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\Emprunt;
+use App\Entity\Livre;
 use App\Form\EmpruntType;
 use App\Repository\EmpruntRepository;
 use Doctrine\ORM\EntityManagerInterface;
@@ -10,6 +11,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Bundle\FrameworkBundle\Controller\Attribute\IsGranted;
 
 #[Route('/emprunt')]
 final class EmpruntController extends AbstractController
@@ -22,22 +24,26 @@ final class EmpruntController extends AbstractController
         ]);
     }
 
-    #[Route('/new', name: 'app_emprunt_new', methods: ['GET', 'POST'])]
-    public function new(Request $request, EntityManagerInterface $entityManager): Response
+    #[Route('/new/{id}', name: 'app_emprunt_new')]
+    //#[IsGranted('ROLE_USER')]
+    public function new(Request $request, Livre $livre, EntityManagerInterface $em): Response
     {
         $emprunt = new Emprunt();
+        $emprunt->setLivre($livre); // Livre sélectionné depuis la page d'accueil
+        $emprunt->setUtilisateur($this->getUser()); // Utilisateur connecté
+        $emprunt->setDateEmprunt(new \DateTime()); // Date automatique
+
         $form = $this->createForm(EmpruntType::class, $emprunt);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $entityManager->persist($emprunt);
-            $entityManager->flush();
+            $em->persist($emprunt);
+            $em->flush();
 
-            return $this->redirectToRoute('app_emprunt_index', [], Response::HTTP_SEE_OTHER);
+            return $this->redirectToRoute('app_emprunt_index'); // Redirection après succès
         }
 
         return $this->render('emprunt/new.html.twig', [
-            'emprunt' => $emprunt,
             'form' => $form,
         ]);
     }

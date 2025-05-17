@@ -20,6 +20,9 @@ class Emprunt
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
     private ?\DateTimeInterface $date_retour = null;
 
+    #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
+    private ?\DateTimeInterface $date_retour_effective = null;
+
     #[ORM\ManyToOne(inversedBy: 'emprunts')]
     private ?Livre $livre = null;
 
@@ -77,5 +80,22 @@ class Emprunt
         $this->utilisateur = $utilisateur;
 
         return $this;
+    }
+    public function getDateRetourEffective(): ?\DateTimeInterface
+    {
+        return $this->date_retour_effective;
+    }
+
+    public function setDateRetourEffective(?\DateTimeInterface $date_retour_effective): static
+    {
+        $this->date_retour_effective = $date_retour_effective;
+
+        return $this;
+    }
+
+    // Méthode utilitaire pour vérifier si l'emprunt est retourné
+    public function estRetourne(): bool
+    {
+        return $this->date_retour_effective !== null;
     }
 }

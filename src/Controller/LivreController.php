@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Entity\Emprunt;
 use App\Entity\Livre;
 use App\Form\LivreType;
 use App\Repository\LivreRepository;
@@ -10,6 +11,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 
 #[Route('/livres') ]
 final class LivreController extends AbstractController
@@ -97,6 +99,34 @@ final class LivreController extends AbstractController
         ]);
     }
     
-
+    #[Route('/livre/retourner/{id}', name: 'app_livre_retourner')]
+public function retournerAction(Request $request, Emprunt $emprunt, EntityManagerInterface $entityManager): Response
+{
+    // Vérifier que l'utilisateur connecté est bien celui qui a emprunté le livre
+    if ($emprunt->getUtilisateur() !== $this->getUser()) {
+        $this->addFlash('error', 'Vous n\'êtes pas autorisé à retourner ce livre.');
+        return $this->redirectToRoute('app_account');
+    }
+    
+    // Vérifier que le livre n'a pas déjà été retourné
+    if ($emprunt->getDateRetourEffective() !== null) {
+        $this->addFlash('error', 'Ce livre a déjà été retourné.');
+        return $this->redirectToRoute('app_account');
+    }
+    
+    // Marquer comme retourné en enregistrant la date de retour effective
+    $emprunt->setDateRetourEffective(new \DateTime());
+    
+    // Mettre à jour la disponibilité du livre
+    $livre = $emprunt->getLivre();
+    $livre->setDisponible(true);
+    
+    $entityManager->persist($emprunt);
+    $entityManager->persist($livre);
+    $entityManager->flush();
+    
+    $this->addFlash('success', 'Le livre a été retourné avec succès.');
+    return $this->redirectToRoute('app_account');
+}
     
 }

@@ -47,9 +47,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(length: 255)]
     private ?string $telephone = null;
 
-    #[ORM\Column]
-    private array $historiqueEmprunts = [];
-
     public function __construct()
     {
         $this->emprunts = new ArrayCollection();
@@ -72,33 +69,19 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-    /**
-     * A visual identifier that represents this user.
-     *
-     * @see UserInterface
-     */
     public function getUserIdentifier(): string
     {
         return (string) $this->email;
     }
 
-    /**
-     * @see UserInterface
-     *
-     * @return list<string>
-     */
     public function getRoles(): array
     {
         $roles = $this->roles;
-        // guarantee every user at least has ROLE_USER
         $roles[] = 'ROLE_USER';
 
         return array_unique($roles);
     }
 
-    /**
-     * @param list<string> $roles
-     */
     public function setRoles(array $roles): static
     {
         $this->roles = $roles;
@@ -106,9 +89,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-    /**
-     * @see PasswordAuthenticatedUserInterface
-     */
     public function getPassword(): ?string
     {
         return $this->password;
@@ -121,12 +101,8 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-    /**
-     * @see UserInterface
-     */
     public function eraseCredentials(): void
     {
-        // If you store any temporary, sensitive data on the user, clear it here
         // $this->plainPassword = null;
     }
 
@@ -136,6 +112,30 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function getEmprunts(): Collection
     {
         return $this->emprunts;
+    }
+
+    /**
+     * Emprunts non encore retournés
+     *
+     * @return Emprunt[]
+     */
+    public function getEmpruntsEnCours(): array
+    {
+        return $this->emprunts->filter(function (Emprunt $e) {
+            return $e->getDateRetourEffective() === null;
+        })->toArray();
+    }
+
+    /**
+     * Emprunts déjà retournés (historique)
+     *
+     * @return Emprunt[]
+     */
+    public function getHistoriqueEmprunts(): array
+    {
+        return $this->emprunts->filter(function (Emprunt $e) {
+            return $e->getDateRetourEffective() !== null;
+        })->toArray();
     }
 
     public function addEmprunt(Emprunt $emprunt): static
@@ -151,7 +151,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function removeEmprunt(Emprunt $emprunt): static
     {
         if ($this->emprunts->removeElement($emprunt)) {
-            // set the owning side to null (unless already changed)
             if ($emprunt->getUtilisateur() === $this) {
                 $emprunt->setUtilisateur(null);
             }
@@ -183,17 +182,4 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
         return $this;
     }
-
-    public function getHistoriqueEmprunts(): array
-    {
-        return $this->historiqueEmprunts;
-    }
-
-    public function setHistoriqueEmprunts(array $historiqueEmprunts): static
-    {
-        $this->historiqueEmprunts = $historiqueEmprunts;
-
-        return $this;
-    }
-    
 }
