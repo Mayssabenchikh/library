@@ -3,7 +3,6 @@
 	<head>
 		<meta charset="UTF-8">
 		<meta name="viewport" content="width=device-width, initial-scale=1.0">
-		<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 		<title>Bibliothèque Municipale - Découvrez notre collection</title>
 		<style>:root
@@ -831,6 +830,7 @@
 	</style>
 </head>
 <body>
+	
 	<!-- Header Section -->
 	<header class="header">
 		<nav class="nav">
@@ -1091,59 +1091,7 @@ nav.style.boxShadow = 'none';
 }
 });
 
-// 3. Gestion de l'ajout au panier
-addToCartButtons.forEach(button => {
-button.addEventListener('click', async function (e) {
-e.preventDefault();
 
-// Sauvegarde le texte original du bouton
-const originalText = button.innerHTML;
-
-try { // Affiche un indicateur de chargement
-button.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Ajout en cours...';
-button.disabled = true;
-
-const response = await fetch(this.href, {
-method: 'POST',
-headers: {
-'X-Requested-With': 'XMLHttpRequest'
-}
-});
-
-if (response.ok) { // Met à jour le compteur du panier
-await updateCartCount();
-
-// Affiche une notification stylisée
-showToast('Article ajouté au panier !', 'success');
-
-// Anime la carte du livre
-animateCard(this.closest('.book-card'));
-
-// Anime le badge du panier
-animateCartBadge();
-} else {
-showToast('Erreur lors de l\'ajout', 'error');
-}
-} catch (error) {
-console.error('Error:', error);
-showToast('Problème de connexion', 'error');
-} finally { // Réinitialise le bouton
-button.innerHTML = originalText;
-button.disabled = false;
-}
-});
-});
-
-// Fonction pour mettre à jour le compteur du panier
-async function updateCartCount() {
-try {
-const response = await fetch('/panier/count');
-const data = await response.json();
-cartBadge.textContent = data.count;
-} catch (error) {
-console.error('Erreur de mise à jour du panier:', error);
-}
-}
 
 // Fonction pour animer la carte du livre
 function animateCard(card) {
@@ -1196,8 +1144,7 @@ setTimeout(() => toast.remove(), 300);
 }, 3000);
 }
 
-// Initialisation: met à jour le compteur au chargement
-updateCartCount();
+
 });
 // Gestion du menu déroulant sur mobile
 const userDropdown = document.querySelector('.user-dropdown');

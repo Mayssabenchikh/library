@@ -1,34 +1,645 @@
+
 {% extends 'base.html.twig' %}
 
-{% block title %}Auteur{% endblock %}
+{% block title %}Fiche Auteur{% endblock %}
+
+{% block stylesheets %}
+{{ parent() }}
+<style>
+    :root {
+        --primary: #8E4A49;
+        --secondary: #A67C52;
+        --light: #f9f9f9;
+        --dark: #3a3a3a;
+        --accent: #E0C9A6;
+        --background: #f5f2e9;
+        --border-color: #dee2e6;
+        /* Espacement et dimensions */
+		--spacing-xs: 0.25rem;
+		--spacing-sm: 0.5rem;
+		--spacing-md: 1rem;
+		--spacing-lg: 1.5rem;
+		--spacing-xl: 2rem;
+		--spacing-xxl: 3rem;
+
+		/* Typographie */
+		--font-primary: 'Montserrat', sans-serif;
+		--font-secondary: 'Playfair Display', serif;
+		--font-size-base: 1rem;
+		--font-size-sm: 0.875rem;
+		--font-size-lg: 1.125rem;
+		--font-size-xl: 1.5rem;
+		--font-size-xxl: 2rem;
+		--font-size-display: 3rem;
+
+		/* Ombres et effets */
+		--shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.05);
+		--shadow-md: 0 4px 6px rgba(0, 0, 0, 0.1);
+		--shadow-lg: 0 10px 15px rgba(0, 0, 0, 0.1);
+		--transition-fast: all 0.2s ease;
+		--transition-normal: all 0.3s ease;
+		--transition-slow: all 0.5s ease;
+
+		/* Arrondis */
+		--radius-sm: 4px;
+		--radius-md: 8px;
+		--radius-lg: 16px;
+		--radius-xl: 24px;
+		--radius-circle: 50%;
+    }
+
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: 'Poppins', sans-serif;
+    }
+
+    body {
+        background: var(--background);
+        color: var(--dark);
+        min-height: 100vh;
+        line-height: 1.6;
+    }
+
+    .header {
+        background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(166, 124, 82, 0.7)), url('https://images.unsplash.com/photo-1507842217343-583bb7270b66?ixlib=rb-1.2.1&auto=format&fit=crop&w=1920&q=80') center/cover no-repeat;
+        height: 40vh;
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-start;
+        align-items: center;
+        text-align: center;
+        color: white;
+        position: relative;
+        overflow: hidden;
+        padding-top: 8rem;
+    }
+
+    .nav {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 1.8rem 3rem;
+        z-index: 10;
+        background: rgba(58, 58, 58, 0.2);
+        backdrop-filter: blur(5px);
+    }
+
+    .logo {
+        font-size: 1.8rem;
+        font-weight: 700;
+        color: white;
+        text-decoration: none;
+    }
+
+    .logo span {
+        color: var(--accent);
+    }
+
+    .nav-links {
+        display: flex;
+        gap: 2rem;
+    }
+
+    .nav-links a {
+        color: white;
+        text-decoration: none;
+        font-weight: 500;
+        transition: all 0.3s ease;
+        position: relative;
+    }
+
+    .nav-links a:hover {
+        color: var(--accent);
+    }
+
+    .nav-links a::after {
+        content: '';
+        position: absolute;
+        width: 0;
+        height: 2px;
+        bottom: -5px;
+        left: 0;
+        background-color: var(--accent);
+        transition: width 0.3s ease;
+    }
+
+    .nav-links a:hover::after {
+        width: 100%;
+    }
+
+    .cta-buttons {
+        display: flex;
+        gap: 1rem;
+    }
+
+    .user-dropdown {
+        position: relative;
+        cursor: pointer;
+        margin-right: 15px;
+    }
+
+    .user-name {
+        color: white;
+        font-weight: 500;
+        display: flex;
+        align-items: center;
+        gap: 5px;
+    }
+
+    .dropdown-menu {
+        position: absolute;
+    top: 100%;
+    right: 0;
+    background: white;
+    box-shadow: var(--shadow-lg);
+    border-radius: var(--radius-md);
+    min-width: 200px;
+    display: none;
+    z-index: 1000;
+    }
+
+    .user-dropdown:hover .dropdown-menu {
+         display: block;
+    animation: fadeInDown 0.3s ease;
+    }
+
+    .dropdown-menu a {
+        display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+    padding: var(--spacing-md);
+    transition: var(--transition-normal);
+    color: var(--text);
+    text-decoration:none;
+    }
+
+    .dropdown-menu a:hover {
+    background-color: rgba(109, 76, 65, 0.1);
+    color: var(--primary);
+}
+
+@keyframes fadeInDown {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+    .dropdown-menu i {
+        margin-right: 10px;
+        font-size: 0.9rem;
+    }
+
+    .btn {
+        padding: 0.8rem 1.5rem;
+        border-radius: 30px;
+        text-decoration: none;
+        font-weight: 600;
+        transition: all 0.3s ease;
+        border: none;
+        cursor: pointer;
+    }
+
+    .btn-primary {
+        background: var(--primary);
+        color: white;
+        box-shadow: 0 4px 15px rgba(142, 74, 73, 0.4);
+    }
+
+    .btn-primary:hover {
+        background: #a85958;
+        transform: translateY(-3px);
+        box-shadow: 0 6px 20px rgba(142, 74, 73, 0.6);
+    }
+
+    .btn-outline {
+        background: transparent;
+        color: white;
+        border: 2px solid white;
+    }
+
+    .btn-outline:hover {
+        background: rgba(255, 255, 255, 0.1);
+        transform: translateY(-3px);
+    }
+
+    .hero-content {
+        max-width: 800px;
+        padding: 0 2rem;
+        z-index: 2;
+    }
+
+    .hero-content h1 {
+        font-size: 3rem;
+        margin-bottom: 1rem;
+        font-weight: 700;
+    }
+
+    .hero-content p {
+        font-size: 1.2rem;
+        margin-bottom: 2rem;
+    }
+
+    .section-title {
+        text-align: center;
+        margin-bottom: 3rem;
+        position: relative;
+    }
+
+    .section-title h2 {
+        font-size: 2.5rem;
+        display: inline-block;
+        color: var(--primary);
+        font-weight: 700;
+        position: relative;
+        padding-bottom: 0.75rem;
+    }
+
+    .section-title h2::after {
+        content: '';
+        position: absolute;
+        width: 100px;
+        height: 4px;
+        background: linear-gradient(to right, var(--primary), var(--secondary));
+        bottom: -10px;
+        left: 50%;
+        transform: translateX(-50%);
+        border-radius: 2px;
+    }
+
+    /* Styles spécifiques pour la fiche auteur */
+    .author-section {
+        padding: 5rem 10%;
+        background: var(--background);
+        animation: fadeIn 0.5s ease-out;
+    }
+
+    @keyframes fadeIn {
+        from {
+            opacity: 0;
+        }
+        to {
+            opacity: 1;
+        }
+    }
+
+    .author-container {
+        background: white;
+        border-radius: 15px;
+        padding: 2rem;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+        overflow: hidden;
+    }
+
+    .author-header {
+        text-align: center;
+        margin-bottom: 2rem;
+    }
+
+    .author-header h1 {
+        font-size: 2.5rem;
+        color: var(--primary);
+        font-weight: 700;
+        position: relative;
+        padding-bottom: 0.75rem;
+        display: inline-block;
+    }
+
+    .author-header h1::after {
+        content: '';
+        position: absolute;
+        width: 80px;
+        height: 4px;
+        background: var(--secondary);
+        bottom: 0;
+        left: 50%;
+        transform: translateX(-50%);
+        border-radius: 2px;
+    }
+
+    .author-card {
+        background-color: var(--light);
+        border-radius: 10px;
+        padding: 2rem;
+        margin-bottom: 2rem;
+        border-left: 5px solid var(--primary);
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+    }
+
+    .author-info {
+        display: grid;
+        grid-template-columns: 120px 1fr;
+        gap: 1.5rem;
+        margin-bottom: 2rem;
+    }
+
+    .info-label {
+        font-weight: 600;
+        color: var(--primary);
+    }
+
+    .info-value {
+        color: var(--dark);
+    }
+
+    .biography-section {
+        margin-top: 2rem;
+        padding-top: 2rem;
+        border-top: 1px solid var(--border-color);
+    }
+
+    .biography-content {
+        line-height: 1.8;
+        text-align: justify;
+        padding: 1.5rem;
+        background-color: var(--light);
+        border-radius: 8px;
+        border-left: 3px solid var(--secondary);
+    }
+
+    .action-btn {
+        display: inline-flex;
+        align-items: center;
+        padding: 0.75rem 1.5rem;
+        background: var(--secondary);
+        color: white;
+        border-radius: 30px;
+        text-decoration: none;
+        font-weight: 600;
+        transition: all 0.3s ease;
+        margin-top: 1.5rem;
+    }
+
+    .action-btn:hover {
+        background: #8c6844;
+        transform: translateY(-3px);
+        box-shadow: 0 5px 15px rgba(166, 124, 82, 0.4);
+    }
+    
+    .action-btn i {
+        margin-right: 8px;
+    }
+
+    .footer {
+        background: var(--dark);
+        color: white;
+        padding: 4rem 10% 2rem;
+        background-image: linear-gradient(to right, #3a3a3a, #4a4a4a, #5a5a5a);
+    }
+
+    .footer-content {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 3rem;
+        margin-bottom: 3rem;
+    }
+
+    .footer-column h3 {
+        margin-bottom: 1.5rem;
+        font-size: 1.3rem;
+        position: relative;
+        padding-bottom: 0.5rem;
+    }
+
+    .footer-column h3::after {
+        content: '';
+        position: absolute;
+        width: 40px;
+        height: 3px;
+        background: var(--secondary);
+        bottom: 0;
+        left: 0;
+    }
+
+    .footer-links {
+        list-style: none;
+    }
+
+    .footer-links li {
+        margin-bottom: 0.8rem;
+    }
+
+    .footer-links a {
+        color: #b0b0b0;
+        text-decoration: none;
+        transition: all 0.3s ease;
+    }
+
+    .footer-links a:hover {
+        color: var(--secondary);
+        padding-left: 5px;
+    }
+
+    .social-links {
+        display: flex;
+        gap: 1rem;
+    }
+
+    .social-links a {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        background: rgba(255, 255, 255, 0.1);
+        color: white;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.3s ease;
+    }
+
+    .social-links a:hover {
+        background: var(--secondary);
+        transform: translateY(-3px);
+    }
+
+    .footer-bottom {
+        border-top: 1px solid rgba(255, 255, 255, 0.1);
+        padding-top: 2rem;
+        text-align: center;
+        color: #b0b0b0;
+        font-size: 0.9rem;
+    }
+
+    /* Responsive styles */
+    @media(max-width: 992px) {
+        .header {
+            height: 35vh;
+        }
+        
+        .hero-content h1 {
+            font-size: 2.5rem;
+        }
+    }
+
+    @media(max-width: 768px) {
+        .nav {
+            padding: 1rem 2rem;
+        }
+
+        .nav-links {
+            display: none;
+        }
+
+        .header {
+            height: 30vh;
+            padding-top: 6rem;
+        }
+
+        .hero-content h1 {
+            font-size: 2rem;
+        }
+
+        .author-section {
+            padding: 3rem 5%;
+        }
+        
+        .author-info {
+            grid-template-columns: 1fr;
+            gap: 0.8rem;
+        }
+        
+        .info-label {
+            padding-bottom: 0.2rem;
+            border-bottom: 1px dashed var(--border-color);
+        }
+        
+        .info-value {
+            margin-bottom: 1rem;
+        }
+    }
+</style>
+{% endblock %}
 
 {% block body %}
-    <h1>Auteur</h1>
+<nav class="nav">
+    <a href="/" class="logo">Biblio<span>thèque</span>
+        <i class="fas fa-book" style="font-size: 0.9rem;"></i>
+    </a>
 
-    <table class="table">
-        <tbody>
-            <tr>
-                <th>Id</th>
-                <td>{{ auteur.id }}</td>
-            </tr>
-            <tr>
-                <th>Nom</th>
-                <td>{{ auteur.nom }}</td>
-            </tr>
-            <tr>
-                <th>Biographie</th>
-                <td>{{ auteur.biographie }}</td>
-            </tr>
-            <tr>
-                <th>Date_de_naissance</th>
-                <td>{{ auteur.dateDeNaissance ? auteur.dateDeNaissance|date('Y-m-d H:i:s') : '' }}</td>
-            </tr>
-        </tbody>
-    </table>
+    <div class="nav-links">
+        <a href="/">Accueil</a>
+        <a href="/auteur">Auteurs</a>
+        <a href="/genre">Genres</a>
+    </div>
 
-    <a href="{{ path('app_auteur_index') }}">back to list</a>
+    <div class="cta-buttons">
+        {% if app.user %}
+            <div class="user-dropdown">
+                <span class="user-name">{{ app.user.nom }}
+                    <i class="fas fa-chevron-down"></i>
+                </span>
+                <div class="dropdown-menu">
+                    <a href="/account">
+                        <i class="fas fa-user"></i>
+                        Mon compte</a>
+                    <a href="{{ path('app_logout') }}">
+                        <i class="fas fa-sign-out-alt"></i>
+                        Déconnexion</a>
+                </div>
+            </div>
+        {% else %}
+            <a href="/login" class="btn btn-outline">Connexion</a>
+            <a href="/register" class="btn btn-primary">Inscription</a>
+        {% endif %}
+    </div>
+</nav>
 
-    <a href="{{ path('app_auteur_edit', {'id': auteur.id}) }}">edit</a>
+<!-- Header Section -->
+<header class="header">
+    <div class="hero-content">
+        <h1>Fiche d'auteur</h1>
+        <p>Découvrez les détails sur cet auteur et ses œuvres</p>
+    </div>
+</header>
 
-    {{ include('auteur/_delete_form.html.twig') }}
+<!-- Author Section -->
+<section class="author-section">
+    <div class="author-container">
+        <div class="author-header">
+            <h1>{{ auteur.nom }}</h1>
+        </div>
+        
+        <div class="author-card">
+            <div class="author-info">
+                <div class="info-label">Identifiant</div>
+                <div class="info-value">{{ auteur.id }}</div>
+                
+                <div class="info-label">Nom complet</div>
+                <div class="info-value">{{ auteur.nom }}</div>
+                
+                <div class="info-label">Date de naissance</div>
+                <div class="info-value">{{ auteur.dateDeNaissance ? auteur.dateDeNaissance|date('d M Y', 'Europe/Paris') : 'Non renseignée' }}</div>
+            </div>
+            
+            <div class="biography-section">
+                <div class="info-label">Biographie</div>
+                <div class="biography-content">{{ auteur.biographie }}</div>
+            </div>
+        </div>
+        
+        <a href="{{ path('app_auteur_index') }}" class="action-btn">
+            <i class="fas fa-arrow-left"></i>
+            Retour au catalogue
+        </a>
+    </div>
+</section>
+
+<!-- Footer -->
+<footer class="footer">
+    <div class="footer-bottom">
+        <p>&copy; {{ "now"|date("Y") }} Bibliothèque Municipale - Tous droits réservés</p>
+    </div>
+</footer>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Animation de la navbar au scroll
+    window.addEventListener('scroll', function () {
+        const nav = document.querySelector('.nav');
+        
+        if (window.scrollY > 100) {
+            nav.style.background = 'rgba(166, 124, 82, 0.8)';
+            nav.style.padding = '1rem 3rem';
+            nav.style.boxShadow = '0 5px 15px rgba(58, 58, 58, 0.2)';
+        } else {
+            nav.style.background = 'rgba(58, 58, 58, 0.2)';
+            nav.style.backdropFilter = 'blur(5px)';
+            nav.style.padding = '1.8rem 3rem';
+            nav.style.boxShadow = 'none';
+        }
+    });
+
+    // Gestion du menu déroulant sur mobile
+    const userDropdown = document.querySelector('.user-dropdown');
+    if (userDropdown) {
+        userDropdown.addEventListener('click', function () {
+            const dropdownMenu = this.querySelector('.dropdown-menu');
+            dropdownMenu.style.opacity = dropdownMenu.style.opacity === '1' ? '0' : '1';
+            dropdownMenu.style.visibility = dropdownMenu.style.visibility === 'visible' ? 'hidden' : 'visible';
+            dropdownMenu.style.transform = dropdownMenu.style.transform === 'translateY(0px)' ? 'translateY(10px)' : 'translateY(0px)';
+        });
+    }
+    
+    // Animation d'entrée pour la carte auteur
+    const authorCard = document.querySelector('.author-card');
+    authorCard.style.opacity = '0';
+    authorCard.style.transform = 'translateY(20px)';
+    authorCard.style.transition = 'all 0.5s ease';
+    
+    setTimeout(() => {
+        authorCard.style.opacity = '1';
+        authorCard.style.transform = 'translateY(0)';
+    }, 300);
+});
+</script>
 {% endblock %}

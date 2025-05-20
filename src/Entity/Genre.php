@@ -1,5 +1,4 @@
 <?php
-
 namespace App\Entity;
 
 use App\Repository\GenreRepository;
@@ -22,9 +21,6 @@ class Genre
     #[ORM\Column(type: Types::TEXT)]
     private ?string $description = null;
 
-    /**
-     * @var Collection<int, Livre>
-     */
     #[ORM\OneToMany(targetEntity: Livre::class, mappedBy: 'genre')]
     private Collection $livre;
 
@@ -46,7 +42,6 @@ class Genre
     public function setNom(string $nom): static
     {
         $this->nom = $nom;
-
         return $this;
     }
 
@@ -58,16 +53,17 @@ class Genre
     public function setDescription(string $description): static
     {
         $this->description = $description;
-
         return $this;
     }
 
+  
+
     /**
-     * @return Collection<int, Livre>
+     * @return array<Livre>
      */
-    public function getLivre(): Collection
+    public function getLivres(): array
     {
-        return $this->livre;
+        return $this->livre->toArray();
     }
 
     public function addLivre(Livre $livre): static
@@ -76,19 +72,16 @@ class Genre
             $this->livre->add($livre);
             $livre->setGenre($this);
         }
-
         return $this;
     }
 
     public function removeLivre(Livre $livre): static
     {
         if ($this->livre->removeElement($livre)) {
-            // set the owning side to null (unless already changed)
             if ($livre->getGenre() === $this) {
                 $livre->setGenre(null);
             }
         }
-
         return $this;
     }
 }

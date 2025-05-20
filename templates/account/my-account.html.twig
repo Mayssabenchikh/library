@@ -14,7 +14,7 @@
 		--secondary: #5c6bc0; /* Bleu indigo */
 		--secondary-light: #8e99f3; /* Bleu clair */
 		--secondary-dark: #26418f; /* Bleu foncé */
-		--accent: #ff9800; /* Orange vif pour accent */
+        --accent: #E0C9A6;
 		--background: #f5f5f5; /* Gris très clair */
 		--surface: #ffffff; /* Blanc */
 		--dark: #2d3436; /* Presque noir */
@@ -95,9 +95,7 @@
 		transition: var(--transition-fast);
 	}
 
-	a:hover {
-		color: var(--secondary);
-	}
+	
 
 	/* Navigation principale */
 	.navbar {
@@ -166,16 +164,18 @@
 		left: 0;
 		right: 0;
 		height: 180px;
-		background: linear-gradient(135deg, var(--primary-light), var(--primary-dark));
+		background: linear-gradient(135deg, #8E4A49, #A67C52);
 		z-index: 0;
-		clip-path: polygon(0 0, 100% 0, 100% 65%, 0 100%);
+		clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%);
 	}
 
 	.account-header {
-		margin-bottom: var(--spacing-xxl);
+		margin-bottom: 150px;
 		text-align: center;
 		position: relative;
 		z-index: 1;
+		
+		
 	}
 
 	.account-header h1 {
@@ -760,6 +760,273 @@
 		transform: translateY(1px);
 		box-shadow: var(--shadow-sm);
 	}
+	/* Styles pour la navbar */
+.nav {
+    position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 1.8rem 3rem;
+        z-index: 1000;
+        background: rgba(58, 58, 58, 0.2);
+        backdrop-filter: blur(5px);
+		
+}
+
+.logo {
+     font-size: 1.8rem;
+        font-weight: 700;
+        color: white;
+        text-decoration: none;
+}
+
+.logo span {
+    color: var(--accent);
+}
+
+.nav-links {
+    display: flex;
+gap: 2rem;}
+
+.nav-links a {
+    color: white;
+        text-decoration: none;
+        font-weight: 500;
+        transition: all 0.3s ease;
+        position: relative;
+}
+
+.nav-links a::after {
+    content: '';
+        position: absolute;
+        width: 0;
+        height: 2px;
+        bottom: -5px;
+        left: 0;
+        background-color: var(--accent);
+        transition: width 0.3s ease;
+}
+
+.nav-links a:hover::after,
+.nav-links a.active::after {
+    width: 70%;
+}
+
+.cta-buttons {
+    display: flex;
+    gap: var(--spacing-md);
+    align-items: center;
+}
+
+.btn {
+    padding: var(--spacing-xs) var(--spacing-lg);
+    border-radius: var(--radius-md);
+    font-weight: 600;
+    transition: var(--transition-normal);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    font-size: var(--font-size-sm);
+}
+
+.btn-outline {
+    border: 2px solid var(--primary);
+    color: var(--primary);
+    background: transparent;
+}
+
+.btn-outline:hover {
+    background-color: var(--primary);
+    color: var(--surface);
+    transform: translateY(-3px);
+    box-shadow: var(--shadow-sm);
+}
+
+.btn-primary {
+    background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+    color: var(--surface);
+    border: none;
+    box-shadow: var(--shadow-sm);
+}
+
+.btn-primary:hover {
+    transform: translateY(-3px);
+    box-shadow: var(--shadow-md);
+}
+
+.user-dropdown {
+    position: relative;
+    cursor: pointer;
+}
+
+.user-name {
+   color: white;
+        font-weight: 500;
+        display: flex;
+        align-items: center;
+        gap: 5px;
+}
+
+.user-name:hover {
+    background-color: rgba(109, 76, 65, 0.1);
+}
+
+.dropdown-menu {
+    position: absolute;
+    top: 100%;
+    right: 0;
+    background: var(--surface);
+    box-shadow: var(--shadow-lg);
+    border-radius: var(--radius-md);
+    min-width: 200px;
+    display: none;
+    z-index: 1000;
+}
+
+.user-dropdown:hover .dropdown-menu {
+    display: block;
+    animation: fadeInDown 0.3s ease;
+}
+
+.dropdown-menu a {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+    padding: var(--spacing-md);
+    transition: var(--transition-normal);
+    color: var(--text);
+}
+
+.dropdown-menu a:hover {
+    background-color: rgba(109, 76, 65, 0.1);
+    color: var(--primary);
+}
+
+@keyframes fadeInDown {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+
+/* Styles pour le footer */
+.footer {
+    background-color: var(--dark);
+    color: var(--surface);
+    padding: var(--spacing-md) var(--spacing-xl);
+    text-align: center;
+    margin-top: var(--spacing-xxl);
+}
+
+.footer-bottom {
+    padding: var(--spacing-md) 0;
+    font-size: var(--font-size-sm);
+    opacity: 0.8;
+}
+
+/* Adaptation responsive */
+@media(max-width: 768px) {
+   /* Navbar adaptée */
+.nav {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1.8rem 3rem;
+    z-index: 10;
+    background: rgba(58, 58, 58, 0.2);
+    backdrop-filter: blur(5px);
+    box-shadow: var(--shadow-md);
+}
+
+.nav-links {
+    display: flex;
+    gap: 2rem;
+}
+nav-links {
+    display: flex;
+    gap: 2rem;
+}
+
+.nav-links a {
+    color: white;
+    text-decoration: none;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    font-size: var(--font-size-sm);
+    transition: all 0.3s ease;
+    position: relative;
+}
+
+.nav-links a:hover {
+    color: var(--accent);
+}
+
+.nav-links a::after {
+    content: '';
+    position: absolute;
+    width: 0;
+    height: 2px;
+    bottom: -5px;
+    left: 0;
+    background-color: var(--accent);
+    transition: width 0.3s ease;
+}
+
+.nav-links a:hover::after,
+.nav-links a.active::after {
+    width: 100%;
+}
+.cta-buttons {
+    display: flex;
+    gap: var(--spacing-md);
+    align-items: center;
+}
+
+.btn {
+    padding: var(--spacing-xs) var(--spacing-lg);
+    border-radius: var(--radius-md);
+    font-weight: 600;
+    transition: var(--transition-normal);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    font-size: var(--font-size-sm);
+}
+
+.btn-outline {
+    border: 2px solid white;
+    color: white;
+    background: transparent;
+}
+
+.btn-outline:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+    transform: translateY(-3px);
+    box-shadow: var(--shadow-sm);
+}
+
+.btn-primary {
+    background: linear-gradient(135deg, var(--accent), var(--primary-dark));
+    color: var(--surface);
+    border: none;
+    box-shadow: var(--shadow-sm);
+}
+
+.btn-primary:hover {
+    transform: translateY(-3px);
+    box-shadow: var(--shadow-md);
+}
 	/* Animations */
 	@keyframes pulse {
 		0% {
@@ -995,9 +1262,38 @@
 		overflow: hidden;
 	}
 </style>{% endblock %}{% block body %}
+<nav class="nav">
+	<a href="#" class="logo">Biblio<span>thèque</span>
+		<i class="fas fa-book" style="font-size: 0.9rem;"></i>
+	</a>
+	<div class="nav-links">
+		<a href="/">Accueil</a>
+		<a href="/auteur">Auteurs</a>
+		<a href="/genre">Genres</a>
+	</div>
+	<div class="cta-buttons">
+		{% if app.user %}
+			<div class="user-dropdown">
+				<span class="user-name">{{ app.user.nom }}
+					<i class="fas fa-chevron-down"></i>
+				</span>
+				<div class="dropdown-menu">
+					<a href="/account">
+						<i class="fas fa-user"></i>
+						Mon compte</a>
+					<a href="{{ path('app_logout') }}">
+						<i class="fas fa-sign-out-alt"></i>
+						Déconnexion</a>
+				</div>
+			</div>
+		{% else %}
+			<a href="/login" class="btn btn-outline">Connexion</a>
+			<a href="/register" class="btn btn-primary">Inscription</a>
+		{% endif %}
+	</div>
+</nav>
 <section class="account-section">
 	<div class="account-header">
-		<h1>Mon Compte</h1>
 	</div>
 
 	<div
@@ -1102,7 +1398,7 @@
 				<h2>Mes emprunts
 				</h2>
 
-				    {% set empruntsEnCours = user.empruntsEnCours %}
+				{% set empruntsEnCours = user.empruntsEnCours %}
 
 
 				{% if empruntsEnCours|length > 0 %}
@@ -1141,40 +1437,49 @@
 					</div>
 				{% endif %}
 			</div>
-<!-- Nouvel onglet Historique - à ajouter après la div id="emprunts" -->
-<div id="history" class="tab-content">
-    <h2>Historique des emprunts</h2>
-    
-    {% if user.historiqueEmprunts|length > 0 %}
-        {% for emprunt in user.historiqueEmprunts %}
-            <div class="history-item">
-                <div class="book-details">
-                    <div class="book-thumbnail">
-                        <i class="fas fa-book"></i>
-                    </div>
-                    <div class="book-info">
-                        <h4>{{ emprunt.livre.titre }}</h4>
-                        <p>Emprunté le {{ emprunt.dateEmprunt|date('d/m/Y') }}</p>
-                        <p>Retourné le {{ emprunt.dateRetourEffective|date('d/m/Y') }}</p>
-                    </div>
-                </div>
-                <div class="borrow-status">
-                    <span class="status-badge status-returned">Retourné</span>
-                </div>
-            </div>
-        {% endfor %}
-    {% else %}
-        <div class="empty-state">
-            <i class="fas fa-history"></i>
-            <h3>Aucun historique</h3>
-            <p>Vous n'avez pas encore d'emprunts dans votre historique.</p>
-        </div>
-    {% endif %}
-</div>
+			<!-- Nouvel onglet Historique - à ajouter après la div id="emprunts" -->
+			<div id="history" class="tab-content">
+				<h2>Historique des emprunts</h2>
+
+				{% if user.historiqueEmprunts|length > 0 %}
+					{% for emprunt in user.historiqueEmprunts %}
+						<div class="history-item">
+							<div class="book-details">
+								<div class="book-thumbnail">
+									<i class="fas fa-book"></i>
+								</div>
+								<div class="book-info">
+									<h4>{{ emprunt.livre.titre }}</h4>
+									<p>Emprunté le
+										{{ emprunt.dateEmprunt|date('d/m/Y') }}</p>
+									<p>Retourné le
+										{{ emprunt.dateRetourEffective|date('d/m/Y') }}</p>
+								</div>
+							</div>
+							<div class="borrow-status">
+								<span class="status-badge status-returned">Retourné</span>
+							</div>
+						</div>
+					{% endfor %}
+				{% else %}
+					<div class="empty-state">
+						<i class="fas fa-history"></i>
+						<h3>Aucun historique</h3>
+						<p>Vous n'avez pas encore d'emprunts dans votre historique.</p>
+					</div>
+				{% endif %}
+			</div>
 
 		</div>
 	</div>
-</section>{% endblock %}{% block javascripts %}
+</section>
+<footer class="footer">
+	<div class="footer-bottom">
+		<p>&copy;
+			{{ "now"|date("Y") }}
+			Bibliothèque Municipale - Tous droits réservés</p>
+	</div>
+</footer>{% endblock %}{% block javascripts %}
 {{ parent() }}
 <script>
 	document.addEventListener('DOMContentLoaded', function () { // Gestion des onglets principaux
@@ -1240,3 +1545,4 @@ alert('Les mots de passe ne correspondent pas.');
 }
 });
 </script>{% endblock %}
+

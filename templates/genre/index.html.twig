@@ -1,49 +1,887 @@
 {% extends 'base.html.twig' %}
+{% block title %}Liste des genres littéraires{% endblock %}
+{% block stylesheets %}
+{{ parent() }}
+<style>
+    :root {
+        --primary: #8E4A49;
+        --secondary: #A67C52;
+        --light: #f9f9f9;
+        --dark: #3a3a3a;
+        --accent: #E0C9A6;
+        --background: #f5f2e9;
+        --border-color: #dee2e6;
+        /* Espacement et dimensions */
+        --spacing-xs: 0.25rem;
+        --spacing-sm: 0.5rem;
+        --spacing-md: 1rem;
+        --spacing-lg: 1.5rem;
+        --spacing-xl: 2rem;
+        --spacing-xxl: 3rem;
 
-{% block title %}Genre index{% endblock %}
+        /* Typographie */
+        --font-primary: 'Montserrat', sans-serif;
+        --font-secondary: 'Playfair Display', serif;
+        --font-size-base: 1rem;
+        --font-size-sm: 0.875rem;
+        --font-size-lg: 1.125rem;
+        --font-size-xl: 1.5rem;
+        --font-size-xxl: 2rem;
+        --font-size-display: 3rem;
+
+        /* Ombres et effets */
+        --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.05);
+        --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.1);
+        --shadow-lg: 0 10px 15px rgba(0, 0, 0, 0.1);
+        --transition-fast: all 0.2s ease;
+        --transition-normal: all 0.3s ease;
+        --transition-slow: all 0.5s ease;
+
+        /* Arrondis */
+        --radius-sm: 4px;
+        --radius-md: 8px;
+        --radius-lg: 16px;
+        --radius-xl: 24px;
+        --radius-circle: 50%;
+    }
+
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: 'Poppins', sans-serif;
+    }
+
+    .btn-info {
+        background: var(--primary);
+        color: white;
+        padding: 0.5rem 1rem;
+        border-radius: 5px;
+        text-decoration: none;
+        transition: all 0.3s ease;
+    }
+
+    .btn-info:hover {
+        background: #a85958;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 8px rgba(142, 74, 73, 0.3);
+    }
+
+    body {
+        background: var(--background);
+        color: var(--dark);
+        min-height: 100vh;
+        line-height: 1.6;
+    }
+
+    /* Header avec image de fond */
+    .header {
+        background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(166, 124, 82, 0.7)), url('https://images.unsplash.com/photo-1507842217343-583bb7270b66?ixlib=rb-1.2.1&auto=format&fit=crop&w=1920&q=80') center/cover no-repeat;
+        height: 40vh;
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-start;
+        align-items: center;
+        text-align: center;
+        color: white;
+        position: relative;
+        overflow: hidden;
+        padding-top: 8rem;
+    }
+
+    .nav {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 1.8rem 3rem;
+        z-index: 10;
+        background: rgba(58, 58, 58, 0.2);
+        backdrop-filter: blur(5px);
+    }
+
+    .logo {
+        font-size: 1.8rem;
+        font-weight: 700;
+        color: white;
+        text-decoration: none;
+    }
+
+    .logo span {
+        color: var(--accent);
+    }
+
+    .nav-links {
+        display: flex;
+        gap: 2rem;
+    }
+
+    .nav-links a {
+        color: white;
+        text-decoration: none;
+        font-weight: 500;
+        transition: all 0.3s ease;
+        position: relative;
+    }
+
+    .nav-links a:hover {
+        color: var(--accent);
+    }
+
+    .nav-links a::after {
+        content: '';
+        position: absolute;
+        width: 0;
+        height: 2px;
+        bottom: -5px;
+        left: 0;
+        background-color: var(--accent);
+        transition: width 0.3s ease;
+    }
+
+    .nav-links a:hover::after {
+        width: 100%;
+    }
+
+    .cta-buttons {
+        display: flex;
+        gap: 1rem;
+        align-items: center;
+    }
+
+     .user-dropdown {
+        position: relative;
+        cursor: pointer;
+        margin-right: 15px;
+    }
+
+     .user-name {
+        color: white;
+        font-weight: 500;
+        display: flex;
+        align-items: center;
+        gap: 5px;
+    }
+
+    .user-name:hover {
+        background-color: rgba(109, 76, 65, 0.1);
+    }
+
+    .dropdown-menu {
+        position: absolute;
+        top: 100%;
+        right: 0;
+        background: white;
+        box-shadow: var(--shadow-lg);
+        border-radius: var(--radius-md);
+        min-width: 200px;
+        display: none;
+        z-index: 1000;
+    }
+
+    .user-dropdown:hover .dropdown-menu {
+        display: block;
+        animation: fadeInDown 0.3s ease;
+    }
+
+    .dropdown-menu a {
+        display: flex;
+        align-items: center;
+        gap: var(--spacing-sm);
+        padding: var(--spacing-md);
+        transition: var(--transition-normal);
+        color: var(--dark);
+        text-decoration: none;
+    }
+
+    .dropdown-menu a:hover {
+        background-color: rgba(109, 76, 65, 0.1);
+        color: var(--primary);
+    }
+
+    @keyframes fadeInDown {
+        from {
+            opacity: 0;
+            transform: translateY(-10px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    .dropdown-menu i {
+        margin-right: 10px;
+        font-size: 0.9rem;
+    }
+
+    .cart-icon {
+        position: relative;
+        margin-right: 1.5rem;
+        cursor: pointer;
+        color: white;
+        font-size: 1.3rem;
+    }
+
+    .cart-badge {
+        position: absolute;
+        top: -8px;
+        right: -8px;
+        background: var(--primary);
+        color: white;
+        font-size: 0.7rem;
+        width: 18px;
+        height: 18px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .btn {
+        padding: 0.8rem 1.5rem;
+        border-radius: 30px;
+        text-decoration: none;
+        font-weight: 600;
+        transition: all 0.3s ease;
+        border: none;
+        cursor: pointer;
+    }
+
+    .btn-primary {
+        background: var(--primary);
+        color: white;
+        box-shadow: 0 4px 15px rgba(142, 74, 73, 0.4);
+    }
+
+    .btn-primary:hover {
+        background: #a85958;
+        transform: translateY(-3px);
+        box-shadow: 0 6px 20px rgba(142, 74, 73, 0.6);
+    }
+
+    .btn-outline {
+        background: transparent;
+        color: white;
+        border: 2px solid white;
+    }
+
+    .btn-outline:hover {
+        background: rgba(255, 255, 255, 0.1);
+        transform: translateY(-3px);
+    }
+
+    .hero-content {
+        max-width: 800px;
+        padding: 0 2rem;
+        z-index: 2;
+    }
+
+    .hero-content h1 {
+        font-size: 3rem;
+        margin-bottom: 1rem;
+        font-weight: 700;
+    }
+
+    .hero-content p {
+        font-size: 1.2rem;
+        margin-bottom: 2rem;
+    }
+
+    /* Wrapper principal - Augmentation de la largeur */
+    .bibliotheque-wrapper {
+        padding: 5rem 5%;
+        background: var(--background);
+        animation: fadeIn 0.5s ease-out;
+        max-width: 1400px;
+        margin: 0 auto;
+    }
+
+    /* Titre de la page */
+    .section-title {
+        text-align: center;
+        margin-bottom: 3rem;
+        position: relative;
+    }
+
+    .section-title h2 {
+        font-size: 2.5rem;
+        display: inline-block;
+        color: var(--dark);
+        font-weight: 700;
+        position: relative;
+        padding-bottom: 0.75rem;
+    }
+
+    .section-title h2::after {
+        content: '';
+        position: absolute;
+        width: 100px;
+        height: 4px;
+        background: linear-gradient(to right, var(--primary), var(--secondary));
+        bottom: -10px;
+        left: 50%;
+        transform: translateX(-50%);
+        border-radius: 2px;
+    }
+
+    /* Barre de recherche améliorée */
+    .search-container {
+        display: flex;
+        max-width: 700px;
+        margin: 2rem auto 3rem;
+        position: relative;
+    }
+
+    .search-input {
+        width: 100%;
+        padding: 1.2rem 4rem 1.2rem 1.5rem;
+        border: none;
+        border-radius: 50px;
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+        font-size: 1.1rem;
+        transition: all 0.3s ease;
+        background: white;
+    }
+
+    .search-input:focus {
+        outline: none;
+        box-shadow: 0 12px 25px rgba(142, 74, 73, 0.2);
+        transform: translateY(-2px);
+    }
+
+    .search-btn {
+        position: absolute;
+        right: 15px;
+        top: 50%;
+        transform: translateY(-50%);
+        background: var(--primary);
+        border: none;
+        color: white;
+        font-size: 1.2rem;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        width: 45px;
+        height: 45px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .search-btn:hover {
+        background: var(--secondary);
+        transform: translateY(-50%) scale(1.05);
+    }
+
+    .reset-search {
+        margin-left: 15px;
+        padding: 0 25px;
+        height: 55px;
+        background-color: var(--light);
+        color: var(--primary);
+        border: none;
+        border-radius: 50px;
+        cursor: pointer;
+        text-decoration: none;
+        font-weight: 600;
+        display: inline-flex;
+        align-items: center;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+    }
+
+    .reset-search:hover {
+        background-color: #e0e0e0;
+        text-decoration: none;
+        transform: translateY(-2px);
+        box-shadow: 0 6px 15px rgba(0, 0, 0, 0.08);
+    }
+
+    /* Section de genre */
+    .genre-section {
+        margin-bottom: 3rem;
+        border-radius: 12px;
+        background-color: white;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+        overflow: hidden;
+        border: 1px solid var(--border-color);
+        transition: all 0.3s ease;
+        position: relative;
+        animation: scaleIn 0.5s ease-out;
+    }
+
+    .genre-section:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 8px 15px rgba(0, 0, 0, 0.1);
+    }
+
+    .genre-section::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 5px;
+        height: 100%;
+        background-color: var(--primary);
+        opacity: 0.7;
+    }
+
+    .genre-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 1.5rem;
+        border-bottom: 1px solid var(--border-color);
+    }
+
+    .genre-title {
+        margin: 0;
+        font-size: 1.4rem;
+        font-weight: 600;
+        color: var(--dark);
+    }
+
+    .genre-description {
+        padding: 1rem 1.5rem;
+        font-style: italic;
+        color: #666;
+        margin: 0;
+        background-color: var(--light);
+        border-bottom: 1px solid var(--border-color);
+    }
+
+    .genre-actions {
+        display: flex;
+        gap: 0.75rem;
+    }
+
+    /* Grid de livres - Augmentation de la taille des cartes */
+    .livres-container {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+        gap: 1.8rem;
+        padding: 2rem;
+    }
+
+    /* Carte de livre - Augmentation de la largeur */
+    .livre-card {
+        display: flex;
+        flex-direction: column;
+        background-color: white;
+        border-radius: 10px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+        transition: all 0.3s ease;
+        border: 1px solid var(--border-color);
+        overflow: hidden;
+        height: 100%;
+    }
+
+    .livre-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.12);
+    }
+
+    .livre-image {
+        height: 300px;
+			background-size: contain;
+			background-position: center;
+			background-repeat: no-repeat;
+			padding: 10px;
+    }
+
+    .livre-info {
+        padding: 1.2rem;
+        display: flex;
+        flex-direction: column;
+        flex-grow: 1;
+    }
+
+    .livre-titre {
+        margin: 0 0 0.8rem 0;
+        font-size: 1.1rem;
+        font-weight: 600;
+        line-height: 1.4;
+        color: var(--dark);
+        height: 50px;
+        overflow: hidden;
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+    }
+
+    .livre-prix {
+        font-weight: bold;
+        color: var(--primary);
+        font-size: 1.2rem;
+        margin-bottom: 1.2rem;
+        display: block;
+        margin-top: auto;
+    }
+
+    .btn-emprunter {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 100%;
+        padding: 0.8rem 0;
+        background-color: var(--accent-color);
+        color: white;
+        text-align: center;
+        border-radius: 8px;
+        font-weight: 600;
+        transition: all 0.3s ease;
+        text-decoration: none;
+    }
+
+    .btn-emprunter:hover {
+        background-color: #d35400;
+        transform: scale(1.02);
+        text-decoration: none;
+        color: white;
+    }
+
+    /* État vide */
+    .no-books {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        padding: 3rem 2rem;
+        background-color: var(--light);
+        border-radius: 0 0 8px 8px;
+        text-align: center;
+        color: #666;
+        font-style: italic;
+    }
+
+    /* Pagination - Ajout d'espace en haut */
+    .pagination {
+        display: flex;
+        justify-content: center;
+        gap: 0.8rem;
+        margin: 2.5rem 0 1rem;
+        padding: 0;
+        list-style-type: none;
+    }
+
+    .pagination a, .pagination .current, .pagination span {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        min-width: 40px;
+        height: 40px;
+        padding: 0 15px;
+        background-color: white;
+        border: 1px solid var(--border-color);
+        border-radius: 8px;
+        color: var(--dark);
+        text-decoration: none;
+        transition: all 0.3s ease;
+        text-align: center;
+        font-weight: 500;
+    }
+
+    .pagination a:hover {
+        background-color: var(--light);
+        transform: translateY(-2px);
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.08);
+    }
+
+    .pagination .current {
+        background-color: var(--primary);
+        color: white;
+        border-color: var(--primary);
+    }
+
+    .pagination .disabled span {
+        background-color: var(--light);
+        color: #aaa;
+        cursor: not-allowed;
+    }
+
+    .pagination .first a, .pagination .previous a,
+    .pagination .next a, .pagination .last a {
+        font-weight: 600;
+    }
+
+    /* Footer */
+    .footer {
+        background: var(--dark);
+        color: white;
+        padding: 4rem 10% 2rem;
+        background-image: linear-gradient(to right, #3a3a3a, #4a4a4a, #5a5a5a);
+    }
+
+    .footer-bottom {
+        border-top: 1px solid rgba(255, 255, 255, 0.1);
+        padding-top: 2rem;
+        text-align: center;
+        color: #b0b0b0;
+        font-size: 0.9rem;
+    }
+
+    /* Responsive */
+    @media (max-width: 992px) {
+        .header {
+            height: 35vh;
+        }
+        
+        .hero-content h1 {
+            font-size: 2.5rem;
+        }
+        
+        .bibliotheque-wrapper {
+            padding: 3rem 5%;
+        }
+    }
+
+    @media (max-width: 768px) {
+        .nav {
+            padding: 1rem 2rem;
+        }
+
+        .nav-links {
+            display: none;
+        }
+
+        .header {
+            height: 30vh;
+            padding-top: 6rem;
+        }
+
+        .hero-content h1 {
+            font-size: 2rem;
+        }
+        
+        .genre-header {
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 1rem;
+        }
+        
+        .genre-actions {
+            width: 100%;
+            justify-content: flex-end;
+        }
+    }
+
+    @media (max-width: 576px) {
+        .livres-container {
+            grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+        }
+        
+        .search-container {
+            flex-direction: column;
+        }
+        
+        .reset-search {
+            margin: 15px 0 0 0;
+            width: 100%;
+            justify-content: center;
+        }
+        
+        .search-input, .reset-search {
+            height: 50px;
+        }
+        
+        .search-btn {
+            width: 40px;
+            height: 40px;
+        }
+    }
+
+    /* Animations */
+    @keyframes slideInUp {
+        from {
+            transform: translateY(30px);
+            opacity: 0;
+        }
+        to {
+            transform: translateY(0);
+            opacity: 1;
+        }
+    }
+
+    @keyframes spin {
+        to {
+            transform: rotate(360deg);
+        }
+    }
+
+    @keyframes fadeIn {
+        from { opacity: 0; }
+        to { opacity: 1; }
+    }
+
+    @keyframes scaleIn {
+        from {
+            transform: scale(0.9);
+            opacity: 0;
+        }
+        to {
+            transform: scale(1);
+            opacity: 1;
+        }
+    }
+</style>
+{% endblock %}
 
 {% block body %}
-    <h1>Genre index</h1>
+<!-- Navigation bar -->
+<nav class="nav">
+    <a href="/" class="logo">Biblio<span>thèque</span>
+        <i class="fas fa-book" style="font-size: 0.9rem;"></i>
+    </a>
 
-    <table class="table">
-        <thead>
-            <tr>
-                <th>Id</th>
-                <th>Nom</th>
-                <th>Description</th>
-                <th>Livres</th>
-                <th>actions</th>
-            </tr>
-        </thead>
-        <tbody>
-        {% for genre in genres %}
-            <tr>
-                <td>{{ genre.id }}</td>
-                <td>{{ genre.nom }}</td>
-                <td>{{ genre.description }}</td>
-                <td>
-                    {% if genre.livre is not empty %}
-                        <ul>
-                        {% for livre in genre.livre %}
-                            <li>{{ livre.titre }}</li>
-                        {% endfor %}
-                        </ul>
-                    {% else %}
-                        Aucun livre
-                    {% endif %}
-                </td>
-                <td>
-                    <a href="{{ path('app_genre_show', {'id': genre.id}) }}">show</a>
-                    <a href="{{ path('app_genre_edit', {'id': genre.id}) }}">edit</a>
-                </td>
-            </tr>
+    <div class="nav-links">
+        <a href="/">Accueil</a>
+        <a href="/auteur">Auteurs</a>
+        <a href="/genre">Genres</a>
+    </div>
+
+    <div class="cta-buttons">
+        {% if app.user %}
+            <div class="user-dropdown">
+                <span class="user-name">{{ app.user.nom }}
+                    <i class="fas fa-chevron-down"></i>
+                </span>
+                <div class="dropdown-menu">
+                    <a href="/account">
+                        <i class="fas fa-user"></i>
+                        Mon compte</a>
+                    <a href="{{ path('app_logout') }}">
+                        <i class="fas fa-sign-out-alt"></i>
+                        Déconnexion</a>
+                </div>
+            </div>
         {% else %}
-            <tr>
-                <td colspan="5">no records found</td>
-            </tr>
-        {% endfor %}
-        </tbody>
-    </table>
+            <a href="/login" class="btn btn-outline">Connexion</a>
+            <a href="/register" class="btn btn-primary">Inscription</a>
+        {% endif %}
+    </div>
+</nav>
 
-    <a href="{{ path('app_genre_new') }}">Create new</a>
+<!-- Header Section -->
+<header class="header">
+    <div class="hero-content">
+        <h1>Les genres littéraires</h1>
+        <p>Explorez notre collection par thèmes et découvrez de nouveaux horizons</p>
+    </div>
+</header>
+
+<section class="bibliotheque-wrapper">
+    <div class="section-title">
+        <h2>Catalogue des Genres</h2>
+    </div>
+    
+    {# Formulaire de recherche modernisé #}
+    <div class="search-container">
+        <form method="get" action="{{ path('app_genre_index') }}" class="search-form" style="width: 100%;">
+            <input type="text" name="search" value="{{ search|default('') }}" placeholder="Rechercher un genre littéraire..." class="search-input">
+            <button type="submit" class="search-btn"><i class="fas fa-search"></i></button>
+        </form>
+        {% if search is defined and search is not empty %}
+            <a href="{{ path('app_genre_index') }}" class="reset-search">Réinitialiser la recherche</a>
+        {% endif %}
+    </div>
+
+    {% for item in paginatedGenres %}
+    <div class="genre-section">
+        <div class="genre-header">
+            <h2 class="genre-title">{{ item.genre.nom }}</h2>
+            <div class="genre-actions">
+                <a href="{{ path('app_genre_show', {'id': item.genre.id}) }}" class="btn btn-sm btn-info">Voir</a>
+            </div>
+        </div>
+        <p class="genre-description">{{ item.genre.description }}</p>
+        {% if item.livres is not empty %}
+        <div class="livres-container">
+            {% for livre in item.livres %}
+            <div class="livre-card">
+                <img src="{{ livre.image }}" alt="{{ livre.titre }}" class="livre-image">
+                <div class="livre-info">
+                    <h3 class="livre-titre">{{ livre.titre }}</h3>
+                    <a href="#" class="btn-emprunter">Emprunter</a>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {# Pagination avec espace supplémentaire #}
+        <div class="pagination">
+            {# Previous Button #}
+            {% if item.hasPrevious %}
+            <a href="{{ path('app_genre_index', {(item.pageKey): item.currentPage - 1}) }}" class="page-link">
+                &laquo; Précédent
+            </a>
+            {% else %}
+            <span class="page-link disabled">&laquo; Précédent</span>
+            {% endif %}
+            {# Current Page #}
+            <span class="current-page">
+                Page {{ item.currentPage }} sur {{ item.totalPages }}
+            </span>
+            {# Next Button #}
+            {% if item.hasNext %}
+            <a href="{{ path('app_genre_index', {(item.pageKey): item.currentPage + 1}) }}" class="page-link">
+                Suivant &raquo;
+            </a>
+            {% else %}
+            <span class="page-link disabled">Suivant &raquo;</span>
+            {% endif %}
+        </div>
+        {% else %}
+        <div class="no-books">Aucun livre dans cette catégorie</div>
+        {% endif %}
+    </div>
+    {% else %}
+    <div class="alert alert-warning">Aucun genre trouvé</div>
+    {% endfor %}
+</section>
+
+<!-- Footer -->
+<footer class="footer">
+    <div class="footer-bottom">
+        <p>&copy; {{ "now"|date("Y") }} Bibliothèque Municipale - Tous droits réservés</p>
+    </div>
+</footer>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Animation de la navbar au scroll
+    window.addEventListener('scroll', function () {
+        const nav = document.querySelector('.nav');
+        
+        if (window.scrollY > 100) {
+            nav.style.background = 'rgba(166, 124, 82, 0.8)';
+            nav.style.padding = '1rem 3rem';
+            nav.style.boxShadow = '0 5px 15px rgba(58, 58, 58, 0.2)';
+        } else {
+            nav.style.background = 'rgba(58, 58, 58, 0.2)';
+            nav.style.backdropFilter = 'blur(5px)';
+            nav.style.padding = '1.8rem 3rem';
+            nav.style.boxShadow = 'none';
+        }
+    });
+
+    // Animation d'entrée pour les cartes de genres
+    const genreSections = document.querySelectorAll('.genre-section');
+    genreSections.forEach((section, index) => {
+        section.style.opacity = '0';
+        section.style.transform = 'translateY(20px)';
+        section.style.transition = 'all 0.3s ease';
+        
+        setTimeout(() => {
+            section.style.opacity = '1';
+            section.style.transform = 'translateY(0)';
+        }, 100 + (index * 70));
+    });
+});
+</script>
+{% endblock %}
+
+{% block javascripts %}
+{{ parent() }}
 {% endblock %}

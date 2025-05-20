@@ -1,0 +1,72 @@
+{% extends 'base.html.twig' %}
+{% block body %}
+<div class="container mt-4">
+<h1 class="mb-4">Liste des Utilisateurs</h1>
+<table class="table table-striped">
+<thead>
+<tr>
+<th>ID</th>
+<th>Email</th>
+<th>Rôles</th>
+<th>Actions</th> {# Nouvelle colonne #}
+</tr>
+</thead>
+<tbody>
+{% for user in users %}
+<tr>
+<td>{{ user.id }}</td>
+<td>{{ user.email }}</td>
+<td>
+{% for role in user.roles %}
+<span class="badge bg-primary">{{ role }}</span>
+{% endfor %}
+</td>
+<td>
+<form class="delete-user-form"
+action="{{ path('app_admin_user_delete', {'id': user.id}) }}"
+method="post">
+<input type="hidden" name="_token" value="{{ csrf_token('delete' ~ user.id) }}">
+<button type="submit" class="btn btn-danger btn-sm">
+<i class="fas fa-trash"></i> Supprimer
+</button>
+</form>
+</td>
+</tr>
+<div class="flash-messages"></div>
+{% endfor %}
+</tbody>
+</table>
+</div>
+{% block javascripts %}
+<script>
+document.querySelectorAll('.delete-user-form').forEach(form => {
+form.addEventListener('submit', function(e) {
+e.preventDefault();
+if (confirm('Êtes-vous sûr de vouloir supprimer cet utilisateur ?')) {
+fetch(this.action, {
+method: 'POST',
+body: new FormData(this)
+})
+.then(response => response.json())
+.then(data => {
+if (data.success) {
+
+// Affiche le message de succès
+const flashContainer = document.createElement('div');
+flashContainer.className = 'alert alert-success';
+flashContainer.textContent = data.message;
+document.querySelector('.flash-messages').appendChild(flashContainer);
+// Supprime la ligne du tableau
+this.closest('tr').remove();
+// Cache le message après 3 secondes
+setTimeout(() => flashContainer.remove(), 3000);
+} else {
+alert(data.message);
+}
+});
+}
+});
+});
+</script>
+{% endblock %}
+{% endblock %}

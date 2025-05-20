@@ -23,6 +23,9 @@ class RegistrationController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             /** @var string $plainPassword */
             $plainPassword = $form->get('plainPassword')->getData();
+            
+            // Définir ROLE_USER par défaut pour tous les nouveaux utilisateurs
+            $user->setRoles(['ROLE_USER']);
 
             // encode the plain password
             $user->setPassword($userPasswordHasher->hashPassword($user, $plainPassword));
@@ -38,5 +41,4 @@ class RegistrationController extends AbstractController
         return $this->render('registration/register.html.twig', [
             'registrationForm' => $form,
         ]);
-    }
-}
+    }}
